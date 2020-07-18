@@ -36,5 +36,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation 'io.github.tomgarden:LibLog:0.1.10'
-    implementation project(path: ':LibPickColor')
+    //implementation project(path: ':LibPickColor')
+    implementation 'io.github.tomgarden:LibPickColor:0.1.0'
 }

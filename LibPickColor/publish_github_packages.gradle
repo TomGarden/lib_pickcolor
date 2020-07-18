@@ -49,7 +49,7 @@ publishing {
         //上传到 Github Packages
         maven {
             name = moduleName
-            url = uri("https://maven.pkg.github.com/TomGarden/lib_log")
+            url = uri("https://maven.pkg.github.com/TomGarden/lib_pickcolor")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("TOMGARADEN_USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("TOMGARADEN_WRITE_PACKAGES_TOKEN")
