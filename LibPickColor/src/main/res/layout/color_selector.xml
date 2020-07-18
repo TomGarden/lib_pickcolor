@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gv_color_selector"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnWidth="50dp"
+    android:verticalSpacing="8dp"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:padding="8dp"
+    android:numColumns="5"
+    tools:listitem="@layout/color_select_item"
+
+    android:listSelector="@drawable/ripple_circumscribed_circle_ff757575">
+
+</GridView>

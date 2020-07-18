@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ExamplePickcolor</string>
+
+    <string name="init_color_ffffffff">init color ffffffff</string>
+    <string name="init_color_ff000000">init color ff000000</string>
+    <string name="click_not_reset_ui">click not reset ui</string>
+
+
+</resources>

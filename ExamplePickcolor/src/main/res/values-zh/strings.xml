@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">颜色选择控件</string>
+
+    <string name="init_color_ffffffff">塞入色值 ffffffff</string>
+    <string name="init_color_ff000000">塞入色值 ff000000</string>
+    <string name="click_not_reset_ui">不重置 UI 的按钮</string>
+
+
+</resources>

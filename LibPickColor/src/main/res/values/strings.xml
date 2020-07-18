@@ -1,0 +1,7 @@
+<resources>
+    <!--color selector dialog-->
+    <string name="custom">custom</string>
+    <string name="back">back</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
+</resources>
