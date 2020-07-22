@@ -25,6 +25,12 @@
         android:layout_height="wrap_content"
         android:text="@string/click_not_reset_ui" />
 
+    <Button
+        android:id="@+id/btnTest4Leak"
+        android:layout_width="match_parent"
+        android:text="test 4 memory leak"
+        android:layout_height="wrap_content"/>
+
     <TextView
         android:id="@+id/tvLogCat"
         android:text="logcat"
