@@ -20,7 +20,6 @@ allprojects {
         google()
         jcenter()
         maven {
-            //name = "LibLog"
             url = uri("https://maven.pkg.github.com/TomGarden/lib_log")
             url = uri("https://maven.pkg.github.com/TomGarden/lib_pickcolor")
             credentials {

@@ -183,7 +183,7 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener, Se
 
     val gridView: GridView? by lazy {
 
-        val context = context?.let { it } ?: return@lazy null
+        val context = context ?: return@lazy null
 
         val result = LayoutInflater.from(context).inflate(R.layout.color_selector, null) as GridView
 
@@ -197,53 +197,6 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener, Se
         result.adapter = this.pickColorAdapter
         result.onItemClickListener = this.pickColorAdapter
         result.onItemLongClickListener = this.pickColorAdapter
-
-//        result.onItemClickListener = AdapterView.OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-//
-//            pickColorAdapter?.let { pickColorAdapter ->
-//
-//                var position = position
-//                //进退 按钮
-//                if (winIsTopSel) {
-//                    pickColorAdapter.positionIndex[0] = position
-//                    winIsTopSel = false
-//
-//                } else {
-//                    position--
-//                    if (position == -1) {
-//                        winIsTopSel = true
-//                        pickColorAdapter.positionIndex[1] = -1
-//
-//                    } else {
-//                        pickColorAdapter.positionIndex[1] = position
-//                    }
-//                }
-//                pickColorAdapter.notifyDataSetChanged()
-//            }
-//        }
-//        result.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-//
-//            pickColorAdapter?.let { pickColorAdapter ->
-//                var position = position
-//
-//                val colorID: Int =
-//                        if (winIsTopSel) {
-//                            pickColorAdapter.colorPalette.COLORS_TOP_SORT[position]
-//                        } else {
-//                            position--
-//                            pickColorAdapter.colorPalette.COLORS_SUB_SORT[pickColorAdapter.positionIndex[0]][position]
-//                        }
-//
-//                val colorDexInt = ContextCompat.getColor(context, colorID)
-//                val colorHexStr = String.format("# %08X", colorDexInt)
-//
-//                Toast.makeText(context, colorHexStr, Toast.LENGTH_SHORT).show()
-//
-//                true
-//            }
-//
-//            false
-//        }
 
         result
     }

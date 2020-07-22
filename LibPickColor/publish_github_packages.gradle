@@ -8,7 +8,7 @@ Github Actions 工作流暂未完成
 
 ext {
     moduleVersionCode = 1
-    moduleVersionName = '0.1.0'
+    moduleVersionName = '0.1.1'
     moduleName = 'LibPickColor'
 
     mavenGroupId = 'io.github.tomgarden'
@@ -73,3 +73,4 @@ task testTask {
 //../gradlew publish
 //一次执行所有
 //./gradlew clean build publish
+//./gradlew :LibPickColor:clean :LibPickColor:build :LibPickColor:publish
