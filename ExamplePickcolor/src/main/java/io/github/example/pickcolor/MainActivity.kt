@@ -60,10 +60,15 @@ class MainActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "展示默认蓝色")
         }
 
-        tvLogCat.setOnClickListener { Toast.makeText(this, "haha", Toast.LENGTH_SHORT).show() }
+        tvLogCat.setOnClickListener {
+            Toast.makeText(this, "haha", Toast.LENGTH_SHORT).show()
+            test()
+        }
+
+        btn_recreate.setOnClickListener { test() }
 
         btnTest4Leak.setOnClickListener {
-            DialogFragment().show(supportFragmentManager, "试验")
+
         }
     }
 
@@ -89,6 +94,7 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Title"/*,true*/)
             .setTransferColorStr("#FFFFFF"/*, true*/)
             .reset(false)
+            .show(supportFragmentManager, "test()")
     }
 
     fun testShow(): Unit {

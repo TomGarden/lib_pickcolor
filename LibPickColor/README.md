@@ -9,7 +9,21 @@ Select color
 2. 当前只支持 androidx.fragment.app.FragmentManager 因为  PickColorDialogFrag : androidx.fragment.app
    - 如果需要支持 android.app.DialogFragment.FragmentManager
    - 拷贝文件替换 FragmentManager 即可 , 如无本文之外的需求其他均无需改动 
-     
+- 内存泄露示例
+    ```kotlin
+    val dialogFragment by lazy{ PickColorDialogFragment() }
+    btnOne.setOnClickListener{
+        if(!dialogFragment.isShow)  {
+            dialogFragment.show(...)
+        }
+    }
+    ```
+- 正确的使用方式
+    ```kotlin
+    btnOne.setOnClickListener{
+        PickColorDialogFragment().show(...)
+    }
+    ```
 
 
 ```kotlin
