@@ -21,7 +21,6 @@ import androidx.fragment.app.DialogFragment
  * author : tom
  *
  * time : 18-9-14 11:28
- *
  * Git : https://github.com/TomGarden
  */
 class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener {
@@ -29,27 +28,24 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener {
     private val delegate = PickColorDelegate()
 
 
-    fun setTitle(title: String?, reset: Boolean = true): PickColorDialogFrag {
-        delegate.title = title
-        delegate.reset = true
+    fun setDefPanel(defPanel: PickColorDefPanel): PickColorDialogFrag {
+        delegate.pickColorDefPanel = defPanel
         return this
     }
 
-    fun setTransferColorStr(transferColorStr: String?, reset: Boolean = true): PickColorDialogFrag {
+    fun setTitle(title: String?): PickColorDialogFrag {
+        delegate.title = title
+        return this
+    }
+
+    fun setTransferColorStr(transferColorStr: String?): PickColorDialogFrag {
         delegate.transferColorStr =
             transferColorStr?.let { Utils.formatHexColorStr(transferColorStr) } ?: Utils.DEF_COLOR
-        delegate.reset = true
         return this
     }
 
-    fun setFlag(flag: Any?, reset: Boolean = true): PickColorDialogFrag {
+    fun setFlag(flag: Any?): PickColorDialogFrag {
         delegate.flag = flag
-        delegate.reset = true
-        return this
-    }
-
-    fun reset(reset: Boolean): PickColorDialogFrag {
-        delegate.reset = reset
         return this
     }
 
@@ -127,7 +123,7 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = delegate.onCreateDialog(savedInstanceState)
+        val dialog = delegate.aDialog
         dialog.setOnShowListener(this)
         return dialog
     }
@@ -157,7 +153,7 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener {
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        delegate.onDismiss(dialog)
+        delegate.onDismissListener?.invoke()
         super.onDismiss(dialog)
     }
 }

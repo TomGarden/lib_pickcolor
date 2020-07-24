@@ -18,7 +18,8 @@ import androidx.core.content.ContextCompat
  * <p>time : 20-2-16 11:57
  * <p>GitHub : https://github.com/TomGarden
  */
-class PickColorAdapter(private val context: Context) : BaseAdapter(), AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
+class PickColorAdapter(private val context: Context) : BaseAdapter(),
+    AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
 
     constructor(context: Context, transferColorStr: String) : this(context) {
         reset(transferColorStr)
@@ -67,10 +68,13 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(), AdapterVie
             }
 
         }
+
     /**通过 show 传入的 color 。存放着当前正设置着的颜色，如果本 Dialog 选出新值，这个值在下次打开Dialog 的时候就会被刚选的新值替代*/
     private var transferColorInt: Int = 0
+
     /**通过 show 传入的 color 是否自定义 color*/
     private var transferColorIsCustom = false
+
     /**通过 show 传入的 color 是否 top color*/
     private var transferColorIsTopColor = false
 
@@ -91,7 +95,9 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(), AdapterVie
         var position = position
 
         val imageView: ImageView = convertView?.let { it as ImageView }
-                ?: let { LayoutInflater.from(context).inflate(R.layout.color_select_item, null) as ImageView }
+            ?: let {
+                LayoutInflater.from(context).inflate(R.layout.color_select_item, null) as ImageView
+            }
 
 
         /**当前 Item 颜色 */
@@ -175,13 +181,13 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(), AdapterVie
      */
     private fun getIntColorByPosition(position: Int): Int {
         val colorId =
-                if (winIsTopPanel) {
-                    /*一级选区*/
-                    colorPalette.COLORS_TOP_SORT[position]
-                } else {
-                    /*二级选取*/
-                    colorPalette.COLORS_SUB_SORT[positionIndex[0]][position]
-                }
+            if (winIsTopPanel) {
+                /*一级选区*/
+                colorPalette.COLORS_TOP_SORT[position]
+            } else {
+                /*二级选取*/
+                colorPalette.COLORS_SUB_SORT[positionIndex[0]][position]
+            }
 
         return ContextCompat.getColor(context, colorId)
     }
@@ -198,12 +204,12 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(), AdapterVie
 
             selColorResult =
                     //如果在选择布局尚未做选取动作；如果传入选择布局的颜色为自定义颜色而非颜色名称
-                    if (transferColorIsCustom) {
-                        PickColorResult(transferColorStr)
-                    } else {
-                        val colorId = Utils.getColorResId(context, transferColorStr)
-                        PickColorResult(colorId)
-                    }
+                if (transferColorIsCustom) {
+                    PickColorResult(transferColorStr)
+                } else {
+                    val colorId = Utils.getColorResId(context, transferColorStr)
+                    PickColorResult(colorId)
+                }
 
 
         } else if (winIsTopPanel && isTopSelected()) {
@@ -252,17 +258,18 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(), AdapterVie
      * AdapterView.OnItemLongClickListener
      */
     override fun onItemLongClick(
-            parent: AdapterView<*>, view: View, position: Int, id: Long): Boolean {
+        parent: AdapterView<*>, view: View, position: Int, id: Long
+    ): Boolean {
         var position = position
 
         val colorID: Int =
-                if (winIsTopPanel) {
-                    colorPalette.COLORS_TOP_SORT[position]
-                } else {
-                    position--
-                    if (position < 0) return true
-                    colorPalette.COLORS_SUB_SORT[positionIndex[0]][position]
-                }
+            if (winIsTopPanel) {
+                colorPalette.COLORS_TOP_SORT[position]
+            } else {
+                position--
+                if (position < 0) return true
+                colorPalette.COLORS_SUB_SORT[positionIndex[0]][position]
+            }
 
         val colorDexInt = ContextCompat.getColor(context, colorID)
         val colorHexStr = String.format("# %08X", colorDexInt)
