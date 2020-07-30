@@ -15,6 +15,7 @@ object Utils {
 
     val DEF_COLOR = "00000000"
 
+    /*根据资源名字获取资源 ID */
     fun getResourcesId(context: Context, resName: String, resType: String): Int {
         return context.resources.getIdentifier(resName, resType, context.packageName)
     }

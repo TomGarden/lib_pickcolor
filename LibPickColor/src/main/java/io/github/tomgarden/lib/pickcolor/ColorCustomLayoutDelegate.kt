@@ -13,12 +13,36 @@ import android.widget.Toast
 import java.util.*
 
 /**
- * describe : 自定义颜色布局 , 二级颜色选择布局
+ * describe : 自定义颜色布局
  *
  * author : Create by tom , on 2020/7/24-7:47 AM
  * github : https://github.com/TomGarden
  */
-class ColorCustomLayoutDelegate(val context: Context) : SeekBar.OnSeekBarChangeListener {
+class ColorCustomLayoutDelegate : SeekBar.OnSeekBarChangeListener {
+
+    constructor(context: Context) {
+        this.context = context
+
+        /*初始化调用一次 , 否则后续无法使用这些对象 , 因为它们没有被实例化*/
+        colorCustomLayout
+        viewIndicator
+        etHexInput
+        sbA
+        sbR
+        sbG
+        sbB
+        etAValueD
+        etRValueD
+        etGValueD
+        etBValueD
+        etAValueH
+        etRValueH
+        etGValueH
+        etBValueH
+    }
+
+
+    private lateinit var context: Context
 
     val colorCustomLayout: ViewGroup? by lazy {
         LayoutInflater.from(context).inflate(R.layout.color_custom, null) as ViewGroup
@@ -81,10 +105,10 @@ class ColorCustomLayoutDelegate(val context: Context) : SeekBar.OnSeekBarChangeL
     //region 三个 SeekBar.OnSeekBarChangeListener 汇总到一个类文件(本类) 进行处理
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        if (!fromUser) {
-            return
-        } else {
+        if (fromUser) {
             this.authorView = seekBar
+        } else {
+            return
         }
 
         val editTextD: EditText?

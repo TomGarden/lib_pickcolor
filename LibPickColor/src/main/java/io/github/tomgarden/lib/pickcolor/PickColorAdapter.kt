@@ -62,7 +62,6 @@ class PickColorAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var position = position
 
         val imageView: ImageView = convertView?.let { it as ImageView }
             ?: let {
@@ -70,8 +69,8 @@ class PickColorAdapter(
             }
 
 
-        /**当前正在渲染的 Item 颜色 */
-        var color = getIntColorByPosition(position)
+        /**当前正在渲染的 Item 颜色 , 之所以不在这里初始化时因为 , 在二级颜色选区中 , item 数量比可选颜色数量多一*/
+        val color: Int
         /*当前正在渲染的 Item 的样式*/
         val imageRes: Int
 
@@ -80,6 +79,7 @@ class PickColorAdapter(
         if (winIsTopPanel) {
             /*一级选区*/
 
+            color = getIntColorByPosition(position)
             if (isTopSelected()) {
 
                 /*一级选区 , 已经做出选择*/
@@ -115,6 +115,7 @@ class PickColorAdapter(
             } else {
                 /*二级选区 , 非返回按钮 , 颜色按钮*/
 
+                color = getIntColorByPosition(position)
                 if (isSubSelected()) {
 
                     /*二级选区 , 已经做出选择*/
@@ -128,7 +129,7 @@ class PickColorAdapter(
                 } else {
 
                     /*二级选区 , 尚未做出选择*/
-                    if (getIntColorByPosition(position) == color) {
+                    if (getSelColor().getDexColor(context) == color) {
                         /*二级选区 , 尚未作出选择 , 当前渲染的颜色可能是一级选区中选中的颜色*/
                         imageRes = R.drawable.ic_ring_black_24dp
                     } else {

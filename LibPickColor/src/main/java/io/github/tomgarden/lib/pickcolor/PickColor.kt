@@ -28,7 +28,7 @@ class PickColor {
      * TODO: [colorID] 应该是可以被本库识别的 ID , 否则转换为自定义 [colorHexStr]
      * TODO: [colorHexStr] 应该被修正为不含有 '#' 字符的 8 位(指定)字符
      */
-    constructor(isCustomColor: Boolean, colorID: Int, colorHexStr: String?) {
+    private constructor(isCustomColor: Boolean, colorID: Int, colorHexStr: String?) {
         this.isCustomColor = isCustomColor
         this.colorID = colorID
         this.colorHexStr = colorHexStr?.let { Utils.formatHexColorStr(colorHexStr) }
@@ -40,6 +40,10 @@ class PickColor {
     constructor(colorID: Int) : this(false, colorID, null)
 
     constructor(colorHexStr: String) : this(true, -1, colorHexStr)
+
+    private fun checkColorId(colorId: Int) {
+        
+    }
 
     fun getResult(context: Context): String? {
         if (isCustomColor) {
@@ -62,9 +66,7 @@ class PickColor {
             return colorHexStr
         } else {
             return String.format(
-                Locale.getDefault(),
-                "%08X",
-                ContextCompat.getColor(context, colorID)
+                Locale.getDefault(), "%08X", ContextCompat.getColor(context, colorID)
             )
         }
     }

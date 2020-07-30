@@ -27,10 +27,7 @@ class PickColorDelegate {
     var title: String? = null
 
     /*默认颜色*/
-    var inputColor:PickColor = PickColor(Utils.DEF_COLOR)
-
-    /*默认颜色*/
-    //var transferColorStr: String = Utils.DEF_COLOR
+    var inputColor: PickColor = PickColor(Utils.DEF_COLOR)
 
     /*携带的其他数据*/
     var flag: Any? = null
@@ -53,9 +50,13 @@ class PickColorDelegate {
 
             when (btnNeutral.text.toString()) {
 
-                context?.getString(R.string.back) -> fromCustomToSelLayout(btnNeutral)
+                context?.getString(R.string.lib_picker_color__str_back) -> {
+                    fromCustomToSelLayout(btnNeutral)
+                }
 
-                context?.getString(R.string.custom) -> fromSelToCustomLayout(btnNeutral)
+                context?.getString(R.string.lib_picker_color__str_custom) -> {
+                    fromSelToCustomLayout(btnNeutral)
+                }
 
                 else -> throw RuntimeException("logic err")
             }
@@ -122,7 +123,7 @@ class PickColorDelegate {
 
             val btnNeutral =
                 btnNeutralParam ?: let { aDialog.getButton(DialogInterface.BUTTON_NEUTRAL) }
-            btnNeutral.setText(R.string.back)
+            btnNeutral.setText(R.string.lib_picker_color__str_back)
         }
     }
 
@@ -134,7 +135,7 @@ class PickColorDelegate {
             viewGroup.addView(gridView)
             val btnNeutral =
                 btnNeutralParam ?: let { aDialog.getButton(DialogInterface.BUTTON_NEUTRAL) }
-            btnNeutral.setText(R.string.custom)
+            btnNeutral.setText(R.string.lib_picker_color__str_custom)
         }
     }
     //endregion 选取变换

@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/md_blue_600" />
+            tools:background="@color/lib_pick_color__md_blue_600" />
 
         <TextView
             android:id="@+id/tv_pound"

@@ -13,9 +13,9 @@ class MainActivity : AppCompatActivity() {
 
     val pickColorDialog: PickColorDialogFrag by lazy {
         PickColorDialogFrag()
-            .setDefNegativeClickListener(getString(R.string.cancel), null)
-            .setDefNeutralClickListener(getString(R.string.custom), null)
-            .setDefPositiveClickListener(getString(R.string.ok))
+            .setDefNegativeClickListener(getString(R.string.lib_picker_color__str_cancel), null)
+            .setDefNeutralClickListener(getString(R.string.lib_picker_color__str_custom), null)
+            .setDefPositiveClickListener(getString(R.string.lib_picker_color__str_ok))
             { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
 
                 tvLogCat.text = selColor?.toString(this) + "\n" + flag
@@ -39,22 +39,18 @@ class MainActivity : AppCompatActivity() {
 
             if (pickColorDialog.isAdded) return@setOnClickListener
             pickColorDialog.setTitle("初始值 #FFFFFF")
-                .setTransferColorStr("#FFFFFF")
                 .show(supportFragmentManager, "展示默认白色")
         }
 
         btn_init_color_ff000000.setOnClickListener {
             if (pickColorDialog.isAdded) return@setOnClickListener
             pickColorDialog.setTitle("初始值 #000000")
-                .setTransferColorStr("#000000")
                 .show(supportFragmentManager, "展示默认黑色")
         }
 
         btn_click_not_reset_ui.setOnClickListener {
             if (pickColorDialog.isAdded) return@setOnClickListener
             pickColorDialog.setTitle("///////////////////")
-                .setTransferColorStr("#0000FF")
-                .reset(false)
                 .show(supportFragmentManager, "展示默认蓝色")
         }
 
@@ -72,9 +68,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun test(): Unit {
         PickColorDialogFrag()
-            .setDefNegativeClickListener(getString(R.string.cancel), null)
-            .setDefNeutralClickListener(getString(R.string.custom), null)
-            .setDefPositiveClickListener(getString(R.string.ok))
+            .setDefNegativeClickListener(getString(R.string.lib_picker_color__str_cancel), null)
+            .setDefNeutralClickListener(getString(R.string.lib_picker_color__str_custom), null)
+            .setDefPositiveClickListener(getString(R.string.lib_picker_color__str_ok))
             { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
                 Logger.d(selColor?.toString(this))
                 Logger.d(flag)
@@ -90,16 +86,12 @@ class MainActivity : AppCompatActivity() {
             .setOnDismissListener { /*隐藏监听 , 实现细节 : 在 onDismiss 方法中调用本回调*/ }
             /*reset 只和下面二个属性相关*/
             .setTitle("Title"/*,true*/)
-            .setTransferColorStr("#FFFFFF"/*, true*/)
-            .reset(false)
             .show(supportFragmentManager, "test()")
     }
 
     fun testShow(): Unit {
         if (pickColorDialog.isAdded) return
         pickColorDialog.setTitle("初始值 #0000FF")
-            .setTransferColorStr("#0000FF")
-            .reset(false)
             .show(supportFragmentManager, "展示默认蓝色")
     }
 }
