@@ -4,12 +4,10 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import io.github.tomgarden.lib.log.Logger
 import io.github.tomgarden.lib.pickcolor.PickColorDialogFrag
-import io.github.tomgarden.lib.pickcolor.PickColorResult
+import io.github.tomgarden.lib.pickcolor.PickColor
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,11 +16,11 @@ class MainActivity : AppCompatActivity() {
             .setDefNegativeClickListener(getString(R.string.cancel), null)
             .setDefNeutralClickListener(getString(R.string.custom), null)
             .setDefPositiveClickListener(getString(R.string.ok))
-            { dialogInterface: DialogInterface?, which: Int, selColorResult: PickColorResult?, flag: Any? ->
+            { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
 
-                tvLogCat.text = selColorResult?.toString(this) + "\n" + flag
+                tvLogCat.text = selColor?.toString(this) + "\n" + flag
 
-                Logger.d(selColorResult?.toString(this))
+                Logger.d(selColor?.toString(this))
                 Logger.d(flag)
             }
     }
@@ -77,8 +75,8 @@ class MainActivity : AppCompatActivity() {
             .setDefNegativeClickListener(getString(R.string.cancel), null)
             .setDefNeutralClickListener(getString(R.string.custom), null)
             .setDefPositiveClickListener(getString(R.string.ok))
-            { dialogInterface: DialogInterface?, which: Int, selColorResult: PickColorResult?, flag: Any? ->
-                Logger.d(selColorResult?.toString(this))
+            { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
+                Logger.d(selColor?.toString(this))
                 Logger.d(flag)
             }
             /*Def 和 非 Def 的差别就是 非 Def 会覆盖 Def , 并且点击事件不会导致 dialog dismiss*/

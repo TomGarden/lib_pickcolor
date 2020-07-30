@@ -1,7 +1,6 @@
 package io.github.tomgarden.lib.pickcolor
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,14 +17,13 @@ import androidx.core.content.ContextCompat
  * <p>time : 20-2-16 11:57
  * <p>GitHub : https://github.com/TomGarden
  */
-class PickColorAdapter(private val context: Context) : BaseAdapter(),
-    AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
+class PickColorAdapter(
+    private val context: Context,
+    /*必传参数 , 可以在逻辑上层设置一个默认值 , 降低使用控件的复杂度*/
+    private var inputColor: PickColor
+) : BaseAdapter(), AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
 
-    constructor(context: Context, transferColorStr: String) : this(context) {
-        reset(transferColorStr)
-    }
-
-    val colorPalette = ColorPalette()
+    private val colorPalette = ColorPalette()
 
     /**
      * true , 当前颜色选择窗口是一级颜色选择窗口
@@ -46,41 +44,13 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(),
      */
     val positionIndex = intArrayOf(-1, -1)
 
-    /**通过 show 传入的 color 。存放着当前正设置着的颜色，如果本 Dialog 选出新值，这个值在下次打开Dialog 的时候就会被刚选的新值替代
-     *
-     * 传入的颜色字符串有两种格式
-     * 1. #123456 或者 #12345678
-     * 2. md_purple_50
-     * */
-    var transferColorStr: String = Utils.DEF_COLOR
-        set(value) {
-            if (field == value) return
-            field = value
-
-            this.transferColorIsCustom = !field.startsWith("md_")
-            this.transferColorIsTopColor = field.endsWith("_500")
-            if (transferColorIsCustom) {
-                this.transferColorInt = Color.parseColor("#$field")
-                field = field.substring(1)
-            } else {
-                val id = Utils.getColorResId(context, field)
-                this.transferColorInt = ContextCompat.getColor(context, id)
-            }
-
-        }
-
-    /**通过 show 传入的 color 。存放着当前正设置着的颜色，如果本 Dialog 选出新值，这个值在下次打开Dialog 的时候就会被刚选的新值替代*/
-    private var transferColorInt: Int = 0
-
-    /**通过 show 传入的 color 是否自定义 color*/
-    private var transferColorIsCustom = false
-
-    /**通过 show 传入的 color 是否 top color*/
-    private var transferColorIsTopColor = false
 
     override fun getCount(): Int {
-        return if (winIsTopPanel) this.colorPalette.COLORS_TOP_SORT.size
-        else this.colorPalette.COLORS_SUB_SORT[positionIndex[0]].size + 1//多一个放返回按钮
+        return if (winIsTopPanel) {
+            this.colorPalette.COLORS_TOP_SORT.size
+        } else {
+            this.colorPalette.COLORS_SUB_SORT[positionIndex[0]].size + 1/*多一个放返回按钮*/
+        }
     }
 
     override fun getItem(position: Int): Any? {
@@ -100,60 +70,72 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(),
             }
 
 
-        /**当前 Item 颜色 */
-        var color = 0
-        var imageRes: Int = R.drawable.ic_circle_black_24dp
+        /**当前正在渲染的 Item 颜色 */
+        var color = getIntColorByPosition(position)
+        /*当前正在渲染的 Item 的样式*/
+        val imageRes: Int
 
-        if (!winIsTopPanel && position == 0) {
 
-            imageRes = R.drawable.ic_back_black_24dp
-            color = ContextCompat.getColor(context, colorPalette.COLORS_TOP_SORT[positionIndex[0]])
+        //逻辑重构
+        if (winIsTopPanel) {
+            /*一级选区*/
 
-        } else {
+            if (isTopSelected()) {
 
-            if (!winIsTopPanel) {
-                position--
-            }
-
-            //下面的 if-else 判断逻辑需要做进一步的理解和重构
-
-            if (winIsTopPanel && !isTopSelected()) {
-                //当前在一级颜色选取 且 一级选取尚未选取    >  按照传入的默认值 str 显示 color
-
-                color = getIntColorByPosition(position)
-                if (transferColorIsTopColor && transferColorInt == color) {
-                    imageRes = R.drawable.ic_ring_black_24dp
-                }
-
-            } else if (winIsTopPanel && isTopSelected()) {
-                //当前在一级颜色选取 且 一级选取已经选取
-
-                color = getIntColorByPosition(position)
+                /*一级选区 , 已经做出选择*/
                 if (position == positionIndex[0]) {
                     imageRes = R.drawable.ic_ring_black_24dp
+                } else {
+                    imageRes = R.drawable.ic_circle_black_24dp
                 }
 
-            } else if (!winIsTopPanel && isSubSelected()) {
-                //当前处于二级选区，二级已经选取
+            } else {
 
-                color = getIntColorByPosition(position)
-                if (position == positionIndex[1]) {
+                /*一级选区 , 尚未做出选择*/
+                if (inputColor.getDexColor(context) == color) {
                     imageRes = R.drawable.ic_ring_black_24dp
+                } else {
+                    imageRes = R.drawable.ic_circle_black_24dp
                 }
 
-            } else if (!winIsTopPanel && !isSubSelected()) {
-                //当前处于二级选区，二级未选取
-
-                color = getIntColorByPosition(position)
-                if (transferColorInt == color || getSelColor()?.getDexColor(context) == color) {
-                    imageRes = R.drawable.ic_ring_black_24dp
-                }
-
-            } else if (!isTopSelected() && isSubSelected()) {
-                //一级未点击，二级点击了
-                throw RuntimeException("Logie ERR")
             }
 
+        } else {
+            /*二级选区*/
+
+            val position = position - 1
+
+            if (position == -1) {
+                /*二级选区 , 返回按钮 , 应该和一级选区中选中的颜色相同*/
+
+                imageRes = R.drawable.ic_back_black_24dp
+                color =
+                    ContextCompat.getColor(context, colorPalette.COLORS_TOP_SORT[positionIndex[0]])
+
+            } else {
+                /*二级选区 , 非返回按钮 , 颜色按钮*/
+
+                if (isSubSelected()) {
+
+                    /*二级选区 , 已经做出选择*/
+                    if (position == positionIndex[1]) {
+                        /*二级选区 , 已经做出选择 , 当前渲染的就是选中项*/
+                        imageRes = R.drawable.ic_ring_black_24dp
+                    } else {
+                        imageRes = R.drawable.ic_circle_black_24dp
+                    }
+
+                } else {
+
+                    /*二级选区 , 尚未做出选择*/
+                    if (getIntColorByPosition(position) == color) {
+                        /*二级选区 , 尚未作出选择 , 当前渲染的颜色可能是一级选区中选中的颜色*/
+                        imageRes = R.drawable.ic_ring_black_24dp
+                    } else {
+                        imageRes = R.drawable.ic_circle_black_24dp
+                    }
+                }
+            }
         }
 
         imageView.setImageResource(imageRes)
@@ -193,63 +175,42 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(),
     }
 
     /**
-     * 获取当前颜色
+     * 获取当前颜色选择器的颜色 , 如果用户通过操作选中了某个颜色 , 即返回这个选中的颜色 , 否则选择默认颜色
      */
-    fun getSelColor(): PickColorResult? {
+    fun getSelColor(): PickColor {
 
-        val selColorResult: PickColorResult?
+        val selColor: PickColor
 
-        if (winIsTopPanel && !isTopSelected()) {
-            /*一级选区 , 尚未做出选择*/
+        if (winIsTopPanel) {
+            /*一级选区*/
 
-            selColorResult =
-                    //如果在选择布局尚未做选取动作；如果传入选择布局的颜色为自定义颜色而非颜色名称
-                if (transferColorIsCustom) {
-                    PickColorResult(transferColorStr)
-                } else {
-                    val colorId = Utils.getColorResId(context, transferColorStr)
-                    PickColorResult(colorId)
-                }
-
-
-        } else if (winIsTopPanel && isTopSelected()) {
-            /*一级选取 , 已经做出选择*/
-
-            val colorId = this.colorPalette.COLORS_TOP_SORT[positionIndex[0]]
-            selColorResult = PickColorResult(colorId)
-
-        } else if (!winIsTopPanel && !isSubSelected()) {
-            /*二级选区 , 尚未做出选择*/
-
-            val colorId = this.colorPalette.COLORS_TOP_SORT[positionIndex[0]]
-            selColorResult = PickColorResult(colorId)
-
-        } else if (!winIsTopPanel && isSubSelected()) {
-            /*二级选区 , 已经做出选择*/
-
-            val colorId = this.colorPalette.COLORS_SUB_SORT[positionIndex[0]][positionIndex[1]]
-            selColorResult = PickColorResult(colorId)
+            if (isTopSelected()) {
+                /*一级选区 , 已经做出选择*/
+                val colorId = this.colorPalette.COLORS_TOP_SORT[positionIndex[0]]
+                selColor = PickColor(colorId)
+            } else {
+                /*一级选区 , 尚未作出选择*/
+                selColor = PickColor(inputColor)
+            }
 
         } else {
+            /*二级选区*/
 
-            selColorResult = null
-            throw RuntimeException("Logic ERR")
+            if (isSubSelected()) {
+                /*二级选区 , 已经走做出选择*/
+                val colorId = this.colorPalette.COLORS_SUB_SORT[positionIndex[0]][positionIndex[1]]
+                selColor = PickColor(colorId)
+            } else {
+                /*二级选区 , 尚未作出选择*/
+                val colorId = this.colorPalette.COLORS_TOP_SORT[positionIndex[0]]
+                selColor = PickColor(colorId)
+            }
 
         }
 
-        return selColorResult
+        return selColor
     }
 
-    fun reset(transferColorStr: String) {
-        this.transferColorStr = transferColorStr
-
-        winIsTopPanel = true
-
-        positionIndex[0] = -1
-        positionIndex[1] = -1
-
-        notifyDataSetChanged()
-    }
 
     //region GirdView.ClickListener
     /**
@@ -260,14 +221,16 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(),
     override fun onItemLongClick(
         parent: AdapterView<*>, view: View, position: Int, id: Long
     ): Boolean {
-        var position = position
+
 
         val colorID: Int =
             if (winIsTopPanel) {
                 colorPalette.COLORS_TOP_SORT[position]
             } else {
-                position--
-                if (position < 0) return true
+                val position = position - 1
+                if (position < 0) {
+                    return true
+                }
                 colorPalette.COLORS_SUB_SORT[positionIndex[0]][position]
             }
 
@@ -282,7 +245,6 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(),
      * AdapterView.OnItemClickListener
      */
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        var position = position
         //进退 按钮
         if (winIsTopPanel) {
             positionIndex[0] = position
@@ -291,7 +253,8 @@ class PickColorAdapter(private val context: Context) : BaseAdapter(),
             Toast.makeText(context, "切换选区样式", Toast.LENGTH_LONG).show()
 
         } else {
-            position--
+            val position = position - 1
+
             if (position == -1) {
                 winIsTopPanel = true
                 positionIndex[1] = -1

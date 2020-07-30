@@ -27,7 +27,7 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener {
 
     private val delegate = PickColorDelegate()
 
-
+    /**面板展示之前设置要展示的 dialog 展示那个面板[defPanel]*/
     fun setDefPanel(defPanel: PickColorDefPanel): PickColorDialogFrag {
         delegate.pickColorDefPanel = defPanel
         return this
@@ -38,9 +38,8 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener {
         return this
     }
 
-    fun setTransferColorStr(transferColorStr: String?): PickColorDialogFrag {
-        delegate.transferColorStr =
-            transferColorStr?.let { Utils.formatHexColorStr(transferColorStr) } ?: Utils.DEF_COLOR
+    fun setInputColor(inputColor: PickColor): PickColorDialogFrag {
+        delegate.inputColor = inputColor
         return this
     }
 
@@ -70,7 +69,7 @@ class PickColorDialogFrag : DialogFragment(), DialogInterface.OnShowListener {
 
     fun setDefPositiveClickListener(
         positiveBtnStr: String,
-        defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColorResult: PickColorResult?, flag: Any?) -> Unit)?
+        defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any?) -> Unit)?
     ): PickColorDialogFrag {
         delegate.positiveBtnStr = positiveBtnStr
         delegate.defPositiveClickListener = defPositiveClickListener

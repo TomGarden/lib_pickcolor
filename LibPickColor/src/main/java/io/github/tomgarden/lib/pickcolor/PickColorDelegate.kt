@@ -27,7 +27,10 @@ class PickColorDelegate {
     var title: String? = null
 
     /*默认颜色*/
-    var transferColorStr: String = Utils.DEF_COLOR
+    var inputColor:PickColor = PickColor(Utils.DEF_COLOR)
+
+    /*默认颜色*/
+    //var transferColorStr: String = Utils.DEF_COLOR
 
     /*携带的其他数据*/
     var flag: Any? = null
@@ -40,7 +43,7 @@ class PickColorDelegate {
             ((dialogInterface: DialogInterface?, which: Int, flag: Any?) -> Unit)? = null
     var defNeutralClickListener:
             ((dialogInterface: DialogInterface?, which: Int, flag: Any?) -> Unit)? = null
-    var defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColorResult: PickColorResult?, flag: Any?) -> Unit)? =
+    var defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any?) -> Unit)? =
         null
 
     var negativeClickListener:
@@ -93,7 +96,7 @@ class PickColorDelegate {
     }
     val pickColorAdapter: PickColorAdapter? by lazy {
         context?.let {
-            PickColorAdapter(it, transferColorStr)
+            PickColorAdapter(it, inputColor)
         }
     }
 
@@ -156,16 +159,16 @@ class PickColorDelegate {
             }
             .setPositiveButton(positiveBtnStr) { dialog, which ->
 
-                var selColorResult: PickColorResult? = null
+                var selColor: PickColor? = null
 
                 if (gridView?.parent != null) {//如果在颜色选择布局
 
-                    selColorResult = pickColorAdapter?.getSelColor()
+                    selColor = pickColorAdapter?.getSelColor()
 
                 } else if (colorCustomLayout?.parent != null) {//如果在颜色自定义布局
 
                     etHexInput?.text?.let {
-                        selColorResult = PickColorResult(it.toString())
+                        selColor = PickColor(it.toString())
                     }
 
                 } else {
@@ -174,7 +177,7 @@ class PickColorDelegate {
 
                 }
 
-                defPositiveClickListener?.invoke(dialog, which, selColorResult, flag)
+                defPositiveClickListener?.invoke(dialog, which, selColor, flag)
             }
 
         val alertDialog = builder.create()

@@ -23,7 +23,10 @@ object Utils {
         return getResourcesId(context, resName, "color")
     }
 
-    /**输出的颜色字符串不含 '#' */
+    /**将输入的颜色字符串修正为不含 '#' 字符的 8 位字符串
+     *
+     * TODO : 意外格式和字符仍需要做足够的测试
+     * */
     fun formatHexColorStr(hexColorStr: String): String {
 
         var hexColorStr = hexColorStr.replace("#", "")
