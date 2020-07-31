@@ -18,7 +18,7 @@ import java.util.*
  * author : Create by tom , on 2020/7/24-7:47 AM
  * github : https://github.com/TomGarden
  */
-class ColorCustomLayoutDelegate : SeekBar.OnSeekBarChangeListener {
+class ColorCustomLayoutDelegate {
 
     constructor(context: Context) {
         this.context = context
@@ -44,107 +44,63 @@ class ColorCustomLayoutDelegate : SeekBar.OnSeekBarChangeListener {
 
     private lateinit var context: Context
 
-    val colorCustomLayout: ViewGroup? by lazy {
+    val colorCustomLayout: ViewGroup by lazy {
         LayoutInflater.from(context).inflate(R.layout.color_custom, null) as ViewGroup
     }
 
-    private val viewIndicator: View? by lazy { colorCustomLayout?.findViewById<View>(R.id.view_indicator) }
-    val etHexInput: EditText? by lazy { colorCustomLayout?.findViewById<EditText>(R.id.et_hex_input) }
+    private val viewIndicator: View by lazy { colorCustomLayout.findViewById<View>(R.id.view_indicator) }
+    val etHexInput: EditText? by lazy { colorCustomLayout.findViewById<EditText>(R.id.et_hex_input) }
     private val sbA: SeekBar? by lazy {
-        colorCustomLayout?.findViewById<SeekBar>(R.id.sb_a)
-            ?.apply { setOnSeekBarChangeListener(this@ColorCustomLayoutDelegate) }
+        colorCustomLayout.findViewById<SeekBar>(R.id.sb_a)
+            ?.apply { bindSbChangeListener(this, etAValueD, etAValueH) }
     }
     private val sbR: SeekBar? by lazy {
-        colorCustomLayout?.findViewById<SeekBar>(R.id.sb_r)
-            ?.apply { setOnSeekBarChangeListener(this@ColorCustomLayoutDelegate) }
+        colorCustomLayout.findViewById<SeekBar>(R.id.sb_r)
+            ?.apply { bindSbChangeListener(this, etRValueD, etRValueH) }
     }
     private val sbG: SeekBar? by lazy {
-        colorCustomLayout?.findViewById<SeekBar>(R.id.sb_g)
-            ?.apply { setOnSeekBarChangeListener(this@ColorCustomLayoutDelegate) }
+        colorCustomLayout.findViewById<SeekBar>(R.id.sb_g)
+            ?.apply { bindSbChangeListener(this, etGValueD, etGValueH) }
     }
     private val sbB: SeekBar? by lazy {
-        colorCustomLayout?.findViewById<SeekBar>(R.id.sb_b)
-            ?.apply { setOnSeekBarChangeListener(this@ColorCustomLayoutDelegate) }
+        colorCustomLayout.findViewById<SeekBar>(R.id.sb_b)
+            ?.apply { bindSbChangeListener(this, etBValueD, etBValueH) }
     }
     private val etAValueD: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_a_value_decimal)
+        colorCustomLayout.findViewById<EditText>(R.id.et_a_value_decimal)
             ?.apply { bindTextChangeListener(this) }
     }
     private val etRValueD: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_r_value_decimal)
+        colorCustomLayout.findViewById<EditText>(R.id.et_r_value_decimal)
             ?.apply { bindTextChangeListener(this) }
     }
     private val etGValueD: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_g_value_decimal)
+        colorCustomLayout.findViewById<EditText>(R.id.et_g_value_decimal)
             ?.apply { bindTextChangeListener(this) }
     }
     private val etBValueD: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_b_value_decimal)
+        colorCustomLayout.findViewById<EditText>(R.id.et_b_value_decimal)
             ?.apply { bindTextChangeListener(this) }
     }
     private val etAValueH: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_a_value_hex)
+        colorCustomLayout.findViewById<EditText>(R.id.et_a_value_hex)
             ?.apply { bindTextChangeListener(this) }
     }
     private val etRValueH: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_r_value_hex)
+        colorCustomLayout.findViewById<EditText>(R.id.et_r_value_hex)
             ?.apply { bindTextChangeListener(this) }
     }
     private val etGValueH: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_g_value_hex)
+        colorCustomLayout.findViewById<EditText>(R.id.et_g_value_hex)
             ?.apply { bindTextChangeListener(this) }
     }
     private val etBValueH: EditText? by lazy {
-        colorCustomLayout?.findViewById<EditText>(R.id.et_b_value_hex)
+        colorCustomLayout.findViewById<EditText>(R.id.et_b_value_hex)
             ?.apply { bindTextChangeListener(this) }
     }
 
     /**联动事件的发起者*/
     private var authorView: View? = null
-
-    //region 三个 SeekBar.OnSeekBarChangeListener 汇总到一个类文件(本类) 进行处理
-
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        if (fromUser) {
-            this.authorView = seekBar
-        } else {
-            return
-        }
-
-        val editTextD: EditText?
-        val editTextH: EditText?
-
-        if (seekBar === sbA) {
-            editTextD = this.etAValueD
-            editTextH = this.etAValueH
-        } else if (seekBar === sbR) {
-            editTextD = this.etRValueD
-            editTextH = this.etRValueH
-        } else if (seekBar === sbG) {
-            editTextD = this.etGValueD
-            editTextH = this.etGValueH
-        } else if (seekBar === sbB) {
-            editTextD = this.etBValueD
-            editTextH = this.etBValueH
-        } else {
-            throw RuntimeException("logic err")
-        }
-
-        editTextD?.setText(String.format("%d", progress))
-        editTextH?.setText(String.format("%02X", progress))
-
-        val colorHexStr = getColorHexStrFromHex()
-        this.etHexInput?.setText(colorHexStr)
-        this.viewIndicator?.setBackgroundColor(Color.parseColor("#$colorHexStr"))
-
-        this.authorView = null
-    }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
-
-    override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
-
-    //endregion 三个 SeekBar.OnSeekBarChangeListener 汇总到一个类文件(本类) 进行处理
 
     private fun bindTextChangeListener(editText: EditText) {
         val textWatcher = EtValueTextWatcher(
@@ -157,6 +113,11 @@ class ColorCustomLayoutDelegate : SeekBar.OnSeekBarChangeListener {
         editText.addTextChangedListener(textWatcher)
     }
 
+    private fun bindSbChangeListener(sb: SeekBar, etD: EditText?, etH: EditText?) {
+        val listener =
+            SeekBarChangeListener(etD, etH, etHexInput, viewIndicator) { getColorHexStrFromHex() }
+        sb.setOnSeekBarChangeListener(listener)
+    }
 
     /**
      * 改变 EditText 内容，本方法严重依赖成员变量 authorView
@@ -328,6 +289,39 @@ class ColorCustomLayoutDelegate : SeekBar.OnSeekBarChangeListener {
         return String.format("%02X%02X%02X%02X", alphaDec, redDec, greenDec, blueDec)
     }
 
+}
+
+/**
+ * seekBar 运动 ,  带动三个 4 个控件运动
+ * 1.2. seekBar 右侧的 10 进制颜色域 和 16 进制颜色域
+ * 3.   整体颜色值
+ * 4.   颜色预览 UI 变化
+ */
+class SeekBarChangeListener(
+    val editTextD: EditText?,
+    val editTextH: EditText?,
+    val etHexInput: EditText?,
+    val viewIndicator: View?,
+    val getColorHexStrFromHex: () -> String
+) : SeekBar.OnSeekBarChangeListener {
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        if (!fromUser) {
+            return
+        }
+
+
+        editTextD?.setText(String.format("%d", progress))
+        editTextH?.setText(String.format("%02X", progress))
+
+        val colorHexStr = getColorHexStrFromHex()
+        this.etHexInput?.setText(colorHexStr)
+        this.viewIndicator?.setBackgroundColor(Color.parseColor("#$colorHexStr"))
+
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
 }
 
 

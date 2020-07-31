@@ -193,6 +193,14 @@
             app:layout_constraintTop_toTopOf="@id/tv_b_label"
             tools:ignore="HardcodedText" />
         <!-- endregion Blue -->
+
+        <androidx.appcompat.widget.AppCompatEditText
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/lib_pick_color__md_amber_50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 
