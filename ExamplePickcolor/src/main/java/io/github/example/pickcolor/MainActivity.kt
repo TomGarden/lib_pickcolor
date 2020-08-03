@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     private fun test(): Unit {
         PickColorDialogFrag.Builder()
             .setDefNegativeClickListener(getString(R.string.lib_picker_color__str_cancel), null)
-            .setDefNeutralClickListener(getString(R.string.lib_picker_color__str_custom), null)
+            .setDefNeutralClickListener(getString(R.string.lib_picker_color__str_custom),getString(R.string.lib_picker_color__str_back), null)
             .setDefPositiveClickListener(getString(R.string.lib_picker_color__str_ok))
             { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
                 Logger.d(selColor?.toString(this))

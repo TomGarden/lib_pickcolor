@@ -1,7 +1,6 @@
 package io.github.tomgarden.lib.pickcolor
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Parcel
@@ -99,7 +98,7 @@ class PickColorDialogFrag : DialogFragment, DialogInterface.OnShowListener, Parc
      */
     class Builder {
         /*默认展示的颜色控制面板*/
-        var pickColorDefPanel = PickColorDefPanel.PANEL_SELECT
+        var pickColorCurPanel = PickColorDefPanel.PANEL_SELECT
 
         /*弹窗标题*/
         var title: String? = null
@@ -112,7 +111,8 @@ class PickColorDialogFrag : DialogFragment, DialogInterface.OnShowListener, Parc
 
 
         var negativeBtnStr: String? = null
-        var neutralBtnStr: String? = null
+        var neutralBtnSelectStr: String? = null
+        var neutralBtnCustomStr: String? = null
         var positiveBtnStr: String? = null
 
 
@@ -134,7 +134,7 @@ class PickColorDialogFrag : DialogFragment, DialogInterface.OnShowListener, Parc
         var onDismissListener: (() -> Unit)? = null
 
         fun setDefPanel(defPanel: PickColorDefPanel): Builder {
-            this.pickColorDefPanel = defPanel
+            this.pickColorCurPanel = defPanel
             return this
         }
 
@@ -163,11 +163,17 @@ class PickColorDialogFrag : DialogFragment, DialogInterface.OnShowListener, Parc
             return this
         }
 
+        /**
+         * @param neutralBtnSelectStr 选择面板 neutral 按钮文案
+         * @param neutralBtnCustomStr 自定义面板 neutral 按钮文案
+         */
         fun setDefNeutralClickListener(
-            neutralBtnStr: String,
+            neutralBtnSelectStr: String,
+            neutralBtnCustomStr: String,
             defNeutralClickListener: ((dialogInterface: DialogInterface?, which: Int, flag: Any?) -> Unit)?
         ): Builder {
-            this.neutralBtnStr = neutralBtnStr
+            this.neutralBtnSelectStr = neutralBtnSelectStr
+            this.neutralBtnCustomStr = neutralBtnCustomStr
             this.defNeutralClickListener = defNeutralClickListener
             return this
         }
@@ -192,10 +198,12 @@ class PickColorDialogFrag : DialogFragment, DialogInterface.OnShowListener, Parc
         }
 
         fun setNeutralClickListener(
-            neutralBtnStr: String,
+            neutralBtnSelectStr: String,
+            neutralBtnCustomStr: String,
             neutralClickListener: ((dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any?) -> Unit)?
         ): Builder {
-            this.neutralBtnStr = neutralBtnStr
+            this.neutralBtnSelectStr = neutralBtnSelectStr
+            this.neutralBtnCustomStr = neutralBtnCustomStr
             this.neutralClickListener = neutralClickListener
             return this
         }
