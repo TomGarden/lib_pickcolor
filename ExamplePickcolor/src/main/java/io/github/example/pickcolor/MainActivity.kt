@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import io.github.tomgarden.lib.log.Logger
 import io.github.tomgarden.lib.pickcolor.PickColorDialogFrag
 import io.github.tomgarden.lib.pickcolor.PickColor
+import io.github.tomgarden.lib.pickcolor.PickColorDefPanel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity() {
             .setOnDismissListener { /*隐藏监听 , 实现细节 : 在 onDismiss 方法中调用本回调*/ }
             /*reset 只和下面二个属性相关*/
             .setTitle("Title"/*,true*/)
+            .setDefPanel(PickColorDefPanel.PANEL_CUSTOM)
             .build()
             .show(supportFragmentManager, "test()")
     }

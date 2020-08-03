@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
+import io.github.tomgarden.lib.log.Logger
 import java.util.*
 
 /**
  * describe : 自定义颜色布局
+ * [√]优化点 : EditText 的录入事件怎么做到和原生一样自然 , 无法录入就录入无效 , 删除后光标未知合理
  *
  * author : Create by tom , on 2020/7/24-7:47 AM
  * github : https://github.com/TomGarden
@@ -31,6 +33,8 @@ class ColorCustomLayoutDelegate {
         sbR
         sbG
         sbB
+        /*
+        初始化 SeekBar 会间接初始化 EditText
         etAValueD
         etRValueD
         etGValueD
@@ -38,7 +42,7 @@ class ColorCustomLayoutDelegate {
         etAValueH
         etRValueH
         etGValueH
-        etBValueH
+        etBValueH*/
     }
 
 
@@ -48,75 +52,95 @@ class ColorCustomLayoutDelegate {
         LayoutInflater.from(context).inflate(R.layout.color_custom, null) as ViewGroup
     }
 
-    private val viewIndicator: View by lazy { colorCustomLayout.findViewById<View>(R.id.view_indicator) }
-    val etHexInput: EditText? by lazy { colorCustomLayout.findViewById<EditText>(R.id.et_hex_input) }
-    private val sbA: SeekBar? by lazy {
-        colorCustomLayout.findViewById<SeekBar>(R.id.sb_a)
-            ?.apply { bindSbChangeListener(this, etAValueD, etAValueH) }
+    private val viewIndicator: View by lazy {
+        colorCustomLayout.findViewById<View>(R.id.view_indicator)
+            ?: let { throw RuntimeException("Logic ERR") }
     }
-    private val sbR: SeekBar? by lazy {
-        colorCustomLayout.findViewById<SeekBar>(R.id.sb_r)
-            ?.apply { bindSbChangeListener(this, etRValueD, etRValueH) }
-    }
-    private val sbG: SeekBar? by lazy {
-        colorCustomLayout.findViewById<SeekBar>(R.id.sb_g)
-            ?.apply { bindSbChangeListener(this, etGValueD, etGValueH) }
-    }
-    private val sbB: SeekBar? by lazy {
-        colorCustomLayout.findViewById<SeekBar>(R.id.sb_b)
-            ?.apply { bindSbChangeListener(this, etBValueD, etBValueH) }
-    }
-    private val etAValueD: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_a_value_decimal)
-            ?.apply { bindTextChangeListener(this) }
-    }
-    private val etRValueD: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_r_value_decimal)
-            ?.apply { bindTextChangeListener(this) }
-    }
-    private val etGValueD: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_g_value_decimal)
-            ?.apply { bindTextChangeListener(this) }
-    }
-    private val etBValueD: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_b_value_decimal)
-            ?.apply { bindTextChangeListener(this) }
-    }
-    private val etAValueH: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_a_value_hex)
-            ?.apply { bindTextChangeListener(this) }
-    }
-    private val etRValueH: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_r_value_hex)
-            ?.apply { bindTextChangeListener(this) }
-    }
-    private val etGValueH: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_g_value_hex)
-            ?.apply { bindTextChangeListener(this) }
-    }
-    private val etBValueH: EditText? by lazy {
-        colorCustomLayout.findViewById<EditText>(R.id.et_b_value_hex)
-            ?.apply { bindTextChangeListener(this) }
-    }
+    val etHexInput: EditText by lazy { initOneEditText(R.id.et_hex_input) }
+    private val sbA: SeekBar by lazy { initOneSeekBar(R.id.sb_a, etAValueD, etAValueH) }
+    private val sbR: SeekBar by lazy { initOneSeekBar(R.id.sb_r, etRValueD, etRValueH) }
+    private val sbG: SeekBar by lazy { initOneSeekBar(R.id.sb_g, etGValueD, etGValueH) }
+    private val sbB: SeekBar by lazy { initOneSeekBar(R.id.sb_b, etBValueD, etBValueH) }
+    private val etAValueD: EditText by lazy { initOneEditText(R.id.et_a_value_decimal) }
+    private val etRValueD: EditText by lazy { initOneEditText(R.id.et_r_value_decimal) }
+    private val etGValueD: EditText by lazy { initOneEditText(R.id.et_g_value_decimal) }
+    private val etBValueD: EditText by lazy { initOneEditText(R.id.et_b_value_decimal) }
+    private val etAValueH: EditText by lazy { initOneEditText(R.id.et_a_value_hex) }
+    private val etRValueH: EditText by lazy { initOneEditText(R.id.et_r_value_hex) }
+    private val etGValueH: EditText by lazy { initOneEditText(R.id.et_g_value_hex) }
+    private val etBValueH: EditText by lazy { initOneEditText(R.id.et_b_value_hex) }
 
     /**联动事件的发起者*/
     private var authorView: View? = null
 
-    private fun bindTextChangeListener(editText: EditText) {
-        val textWatcher = EtValueTextWatcher(
-            editText,
-            { authorView },
-            { authorView -> this@ColorCustomLayoutDelegate.authorView = authorView },
-            { comeFrom, beforeChangedText, onChangedText ->
-                onChangedText(comeFrom, beforeChangedText, onChangedText)
-            })
+    /*针对 SeekBar 右侧的 EditText 做初始化动作*/
+    private fun initOneEditText(editTextId: Int): EditText {
+        val editText =
+            colorCustomLayout.findViewById<EditText>(editTextId)
+                ?: let { throw RuntimeException("Logic ERR") }
+
+        val textWatcher =
+            EtValueTextWatcher(
+                editText,
+                getAuthorView = { authorView },
+                setAuthorView = { authorView: View? ->
+                    this@ColorCustomLayoutDelegate.authorView = authorView
+                },
+                onChangedText = this::onChangedText,
+                debugViewName = this::debugViewName
+            )
+
+        editText.tag = textWatcher
+
         editText.addTextChangedListener(textWatcher)
+
+        return editText
     }
 
-    private fun bindSbChangeListener(sb: SeekBar, etD: EditText?, etH: EditText?) {
+    /*针对指定的 seek bar 做初始化*/
+    private fun initOneSeekBar(sbId: Int, etD: EditText, etH: EditText): SeekBar {
+        val sb =
+            colorCustomLayout.findViewById<SeekBar>(sbId)
+                ?: let { throw RuntimeException("Logic ERR") }
+
         val listener =
-            SeekBarChangeListener(etD, etH, etHexInput, viewIndicator) { getColorHexStrFromHex() }
+            SeekBarChangeListener(
+                etD,
+                etH,
+                etHexInput,
+                viewIndicator,
+                getColorHexStrFromHex = this::getColorHexStrFromHex,
+                etSetText = this::etSetText
+            )
+
+        sb.tag = listener
         sb.setOnSeekBarChangeListener(listener)
+
+        return sb
+    }
+
+    private fun seekBarSetProgress(seekBar: SeekBar, progress: Int) {
+        /*取消监听*/
+        val sbListener = seekBar.tag as SeekBarChangeListener? ?: return
+        seekBar.setOnSeekBarChangeListener(null)
+
+        /*设置值*/
+        seekBar.progress = progress
+
+        /*恢复监听*/
+        seekBar.setOnSeekBarChangeListener(sbListener)
+    }
+
+    private fun etSetText(editText: EditText, text: String?) {
+        /*清除原来的监听*/
+        val textWatcher = editText.tag as EtValueTextWatcher? ?: return
+        editText.removeTextChangedListener(textWatcher)
+
+        /*设置新值*/
+        editText.setText(text)
+
+        /*重新监听*/
+        editText.addTextChangedListener(textWatcher)
     }
 
     /**
@@ -126,170 +150,210 @@ class ColorCustomLayoutDelegate {
      * @param beforeChangedText 修改之前的文本
      * @param onChangedText     即将修改的文本(修改成功后文本就是此内容)
      */
-    fun onChangedText(comeFrom: EditText?, beforeChangedText: String?, onChangedText: Editable?) {
-        if (authorView?.id != comeFrom?.id) {
+    private fun onChangedText(
+        comeFrom: EditText,
+        beforeChangedText: String?,
+        onChangedText: Editable,
+        start: Int?,
+        count: Int?,
+        after: Int?
+    ) {
+        if (authorView?.id != comeFrom.id) {
             return
         }
 
-        if (onChangedText == null || onChangedText.toString().isEmpty()) {
-            return
-        }
-
-        var numDec = -1
-        var numHex: String? = null
+        var numDec: Int = 0
+        var numHex: String = ""
         var colorHexStr: String
 
-        try {
 
-            when (comeFrom?.id) {
-                R.id.et_a_value_decimal,
-                R.id.et_r_value_decimal,
-                R.id.et_g_value_decimal,
-                R.id.et_b_value_decimal -> {
-                    numDec = Integer.parseInt(onChangedText.toString())
-                    if (numDec > 255) {
-                        if (beforeChangedText != onChangedText.toString()) {
-                            onChangedText.replace(0, onChangedText.length, beforeChangedText)
-                            Toast.makeText(context, "[0,255]", Toast.LENGTH_SHORT).show()
-                        }
-                        return
-                    } else {
-                        numHex = String.format("%02X", numDec)
+        when (comeFrom.id) {
+            R.id.et_a_value_decimal,
+            R.id.et_r_value_decimal,
+            R.id.et_g_value_decimal,
+            R.id.et_b_value_decimal -> {
+
+                numDec = onChangedText.toString().toIntOrNull() ?: 0
+
+                /*十进制转换成功*/
+                if (numDec > 255) {
+                    etSetText(comeFrom, beforeChangedText)
+                    if(start!=null && after!=null) {
+                        comeFrom.setSelection(start + after)
                     }
-                }
-
-
-                R.id.et_a_value_hex,
-                R.id.et_r_value_hex,
-                R.id.et_g_value_hex,
-                R.id.et_b_value_hex -> {
-                    numHex = onChangedText.toString()
-                    numDec = Integer.parseInt(numHex, 16)
-                }
-
-
-                R.id.et_hex_input -> {
-                    colorHexStr = onChangedText.toString()
-                    if (colorHexStr.length != 8) {
-                        colorHexStr += "00000000"
-                        colorHexStr = colorHexStr.substring(0, 8)
-                    }
-
-                    val alphaHex = colorHexStr.substring(0, 2)
-                    val redHex = colorHexStr.substring(2, 4)
-                    val greenHex = colorHexStr.substring(4, 6)
-                    val blueHex = colorHexStr.substring(6, 8)
-
-                    val alphaDec = Integer.parseInt(alphaHex, 16)
-                    val redDec = Integer.parseInt(redHex, 16)
-                    val greenDec = Integer.parseInt(greenHex, 16)
-                    val blueDec = Integer.parseInt(blueHex, 16)
-
-                    this.sbA?.progress = alphaDec
-                    this.sbR?.progress = redDec
-                    this.sbG?.progress = greenDec
-                    this.sbB?.progress = blueDec
-
-                    this.etAValueD?.setText(alphaDec.toString())
-                    this.etRValueD?.setText(redDec.toString())
-                    this.etGValueD?.setText(greenDec.toString())
-                    this.etBValueD?.setText(blueDec.toString())
-
-                    this.etAValueH?.setText(alphaHex)
-                    this.etRValueH?.setText(redHex)
-                    this.etGValueH?.setText(greenHex)
-                    this.etBValueH?.setText(blueHex)
-
-                    this.viewIndicator?.setBackgroundColor(Color.parseColor("#$colorHexStr"))
-
-                    val upperStr = onChangedText.toString().toUpperCase(Locale.getDefault())
-                    if (upperStr != onChangedText.toString()) {
-                        onChangedText.replace(0, onChangedText.length, upperStr)
-                    }
-
+                    Toast.makeText(context, "[0,255]", Toast.LENGTH_SHORT).show()
                     return
                 }
+
+                numHex = String.format("%02X", numDec)
+
             }
 
-        } catch (e: NumberFormatException) {
-            throw e
-            /*Logger.e(e);
-            if (!beforeChangedText.equals(onChangedText.toString())) {
-                onChangedText.replace(0, onChangedText.length(), beforeChangedText);
+
+            R.id.et_a_value_hex,
+            R.id.et_r_value_hex,
+            R.id.et_g_value_hex,
+            R.id.et_b_value_hex -> {
+                val tempNumHex = onChangedText.toString().toUpperCase(Locale.getDefault())
+                etSetText(comeFrom, tempNumHex)
+                if(start!=null && after!=null) {
+                    comeFrom.setSelection(start + after)
+                }
+                numHex =
+                    if (tempNumHex.isEmpty()) {
+                        "00"
+                    } else {
+                        tempNumHex
+                    }
+                numDec = Integer.parseInt(numHex, 16)
             }
-            return;*/
+
+
+            R.id.et_hex_input -> {
+                colorHexStr = onChangedText.toString().toUpperCase(Locale.getDefault())
+                etSetText(comeFrom, colorHexStr)
+                if(start!=null && after!=null) {
+                    comeFrom.setSelection(start + after)
+                }
+                if (colorHexStr.length != 8) {
+                    colorHexStr += "00000000"
+                    colorHexStr = colorHexStr.substring(0, 8)
+                }
+
+                val alphaHex = colorHexStr.substring(0, 2)
+                val redHex = colorHexStr.substring(2, 4)
+                val greenHex = colorHexStr.substring(4, 6)
+                val blueHex = colorHexStr.substring(6, 8)
+
+                val alphaDec = Integer.parseInt(alphaHex, 16)
+                val redDec = Integer.parseInt(redHex, 16)
+                val greenDec = Integer.parseInt(greenHex, 16)
+                val blueDec = Integer.parseInt(blueHex, 16)
+
+
+                seekBarSetProgress(this.sbA, alphaDec)
+                seekBarSetProgress(this.sbR, redDec)
+                seekBarSetProgress(this.sbG, greenDec)
+                seekBarSetProgress(this.sbB, blueDec)
+
+                etSetText(this.etAValueD, alphaDec.toString())
+                etSetText(this.etRValueD, redDec.toString())
+                etSetText(this.etGValueD, greenDec.toString())
+                etSetText(this.etBValueD, blueDec.toString())
+
+                etSetText(this.etAValueH, alphaHex)
+                etSetText(this.etRValueH, redHex)
+                etSetText(this.etGValueH, greenHex)
+                etSetText(this.etBValueH, blueHex)
+
+                this.viewIndicator.setBackgroundColor(Color.parseColor("#$colorHexStr"))
+
+                return
+            }
         }
 
 
-        if (numHex == null) {
-            throw RuntimeException("logic err")
-        }
 
         when {
             comeFrom === etAValueD -> {
-                this.etAValueH?.setText(numHex)
-                this.sbA?.progress = numDec
+                etSetText(this.etAValueH, numHex)
+                seekBarSetProgress(this.sbA, numDec)
                 colorHexStr = this.getColorHexStrFromHex()
             }
             comeFrom === etRValueD -> {
-                this.etRValueH?.setText(numHex)
-                this.sbR?.progress = numDec
+                etSetText(this.etRValueH, numHex)
+                seekBarSetProgress(this.sbR, numDec)
                 colorHexStr = this.getColorHexStrFromHex()
             }
             comeFrom === etGValueD -> {
-                this.etGValueH?.setText(numHex)
-                this.sbG?.progress = numDec
+                etSetText(this.etGValueH, numHex)
+                seekBarSetProgress(this.sbG, numDec)
                 colorHexStr = this.getColorHexStrFromHex()
             }
             comeFrom === etBValueD -> {
-                this.etBValueH?.setText(numHex)
-                this.sbB?.progress = numDec
+                etSetText(this.etBValueH, numHex)
+                seekBarSetProgress(this.sbB, numDec)
                 colorHexStr = this.getColorHexStrFromHex()
             }
             comeFrom === etAValueH -> {
-                etAValueD?.setText(numDec.toString())
-                sbA?.progress = numDec
+                etSetText(etAValueD, numDec.toString())
+                seekBarSetProgress(sbA, numDec)
                 colorHexStr = this.getColorHexStrFromDex()
             }
             comeFrom === etRValueH -> {
-                etRValueD?.setText(numDec.toString())
-                sbR?.progress = numDec
+                etSetText(etRValueD, numDec.toString())
+                seekBarSetProgress(sbR, numDec)
                 colorHexStr = this.getColorHexStrFromDex()
             }
             comeFrom === etGValueH -> {
-                etGValueD?.setText(numDec.toString())
-                sbG?.progress = numDec
+                etSetText(etGValueD, numDec.toString())
+                seekBarSetProgress(sbG, numDec)
                 colorHexStr = this.getColorHexStrFromDex()
             }
             comeFrom === etBValueH -> {
-                etBValueD?.setText(numDec.toString())
-                sbB?.progress = numDec
+                etSetText(etBValueD, numDec.toString())
+                seekBarSetProgress(sbB, numDec)
                 colorHexStr = this.getColorHexStrFromDex()
             }
             else -> throw RuntimeException("logic err")
         }
 
-        this.etHexInput?.setText(colorHexStr)
-        this.viewIndicator?.setBackgroundColor(Color.parseColor("#$colorHexStr"))
+        etSetText(this.etHexInput, colorHexStr)
+        this.viewIndicator.setBackgroundColor(Color.parseColor("#$colorHexStr"))
     }
 
     /**从四个十六进制颜色子集(两位)获取颜色的整体值*/
     private fun getColorHexStrFromHex(): String {
-        return this.etAValueH?.text.toString() +
-                this.etRValueH?.text +
-                this.etGValueH?.text +
-                this.etBValueH?.text
+
+        fun getHex(editText: EditText): String {
+            return editText.text.toString().let {
+                if (it.isEmpty()) {
+                    "00"
+                } else {
+                    it
+                }
+            }
+        }
+
+        val alphaHex = getHex(etAValueH)
+        val redHex = getHex(etRValueH)
+        val greenHex = getHex(etGValueH)
+        val blueHex = getHex(etBValueH)
+
+        return alphaHex + redHex + greenHex + blueHex
     }
 
     private fun getColorHexStrFromDex(): String {
-        val alphaDec = Integer.parseInt(this.etAValueD?.text.toString())
-        val redDec = Integer.parseInt(this.etRValueD?.text.toString())
-        val greenDec = Integer.parseInt(this.etGValueD?.text.toString())
-        val blueDec = Integer.parseInt(this.etBValueD?.text.toString())
+        val alphaDec = this.etAValueD.text.toString().toIntOrNull() ?: 0
+        val redDec = this.etRValueD.text.toString().toIntOrNull() ?: 0
+        val greenDec = this.etGValueD.text.toString().toIntOrNull() ?: 0
+        val blueDec = this.etBValueD.text.toString().toIntOrNull() ?: 0
         return String.format("%02X%02X%02X%02X", alphaDec, redDec, greenDec, blueDec)
     }
 
+    private fun debugViewName(view: View?): String {
+        return when {
+            view === colorCustomLayout -> "colorCustomLayout"
+            view === viewIndicator -> "viewIndicator"
+            view === etHexInput -> "etHexInput"
+            view === sbA -> "sbA"
+            view === sbR -> "sbR"
+            view === sbG -> "sbG"
+            view === sbB -> "sbB"
+            view === etAValueD -> "etAValueD"
+            view === etRValueD -> "etRValueD"
+            view === etGValueD -> "etGValueD"
+            view === etBValueD -> "etBValueD"
+            view === etAValueH -> "etAValueH"
+            view === etRValueH -> "etRValueH"
+            view === etGValueH -> "etGValueH"
+            view === etBValueH -> "etBValueH"
+            view === authorView -> "authorView"
+            else -> "UNKNOW"
+        }
+    }
 }
+
 
 /**
  * seekBar 运动 ,  带动三个 4 个控件运动
@@ -298,24 +362,24 @@ class ColorCustomLayoutDelegate {
  * 4.   颜色预览 UI 变化
  */
 class SeekBarChangeListener(
-    val editTextD: EditText?,
-    val editTextH: EditText?,
-    val etHexInput: EditText?,
-    val viewIndicator: View?,
-    val getColorHexStrFromHex: () -> String
+    private val editTextD: EditText,
+    private val editTextH: EditText,
+    private val etHexInput: EditText,
+    private val viewIndicator: View,
+    private val getColorHexStrFromHex: () -> String,
+    private val etSetText: (editText: EditText, text: String?) -> Unit
 ) : SeekBar.OnSeekBarChangeListener {
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (!fromUser) {
             return
         }
 
-
-        editTextD?.setText(String.format("%d", progress))
-        editTextH?.setText(String.format("%02X", progress))
+        etSetText(editTextD, String.format("%d", progress))
+        etSetText(editTextH, String.format("%02X", progress))
 
         val colorHexStr = getColorHexStrFromHex()
-        this.etHexInput?.setText(colorHexStr)
-        this.viewIndicator?.setBackgroundColor(Color.parseColor("#$colorHexStr"))
+        etSetText(this.etHexInput, colorHexStr)
+        this.viewIndicator.setBackgroundColor(Color.parseColor("#$colorHexStr"))
 
     }
 
@@ -326,27 +390,72 @@ class SeekBarChangeListener(
 
 
 class EtValueTextWatcher(
-    val editText: EditText,
+    private val editText: EditText,
     val getAuthorView: () -> View?,
     val setAuthorView: (authorView: View?) -> Unit,
-    val onChangedText: (comeFrom: EditText?, beforeChangedText: String?, onChangedText: Editable?) -> Unit
+    val onChangedText: (comeFrom: EditText, beforeChangedText: String?, onChangedText: Editable, start: Int?, count: Int?, after: Int?) -> Unit,
+    val debugViewName: (view: View?) -> String
 ) : TextWatcher {
 
     private var beforeChangedText: String? = null
+    private var start: Int? = null
+    private var count: Int? = null
+    private var after: Int? = null
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    override fun beforeTextChanged(
+        charSequence: CharSequence?,
+        start: Int,
+        count: Int,
+        after: Int
+    ) {
+        Logger.d(
+            "1-beforeTextChanged=charSequence=${charSequence.toString()}, start=${start}, count=${count}, after=${after}), ${debugViewName(
+                editText
+            )}"
+        )
+
         if (getAuthorView() == null) {
             setAuthorView(editText)
+        } else {
+            Logger.e("Log ERR")
+            return
         }
-        this.beforeChangedText = s?.toString()
+        this.beforeChangedText = charSequence?.toString()
+        this.start = start
+        this.count = count
+        this.after = after
+
     }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+    override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+        Logger.d(
+            "2-onTextChanged(charSequence= ${charSequence.toString()} start= ${start} before= ${before} count= ${count}), ${debugViewName(
+                editText
+            )}"
+        )
+    }
 
-    override fun afterTextChanged(s: Editable?) {
-        onChangedText(editText, this.beforeChangedText, s/*this.onChangedText*/)
+    override fun afterTextChanged(editable: Editable?) {
+        Logger.d("3-beforeTextChanged(editable= ${editable.toString()}), $${debugViewName(editText)}")
+
         if (getAuthorView() === editText) {
+            editable?.let {
+                onChangedText(
+                    editText,
+                    this.beforeChangedText,
+                    editable,
+                    start,
+                    count,
+                    after
+                )
+            }
             setAuthorView(null)
+            this.beforeChangedText = null
+            this.start = null
+            this.count = null
+            this.after = null
+        } else {
+            Logger.e("Log ERR")
         }
     }
 
