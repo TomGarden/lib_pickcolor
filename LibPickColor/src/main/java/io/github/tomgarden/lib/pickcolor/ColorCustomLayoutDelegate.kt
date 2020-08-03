@@ -178,8 +178,8 @@ class ColorCustomLayoutDelegate {
                 /*十进制转换成功*/
                 if (numDec > 255) {
                     etSetText(comeFrom, beforeChangedText)
-                    if(start!=null && after!=null) {
-                        comeFrom.setSelection(start + after)
+                    if (start != null && after != null && beforeChangedText != null) {
+                        comeFrom.setSelection(beforeChangedText.length)
                     }
                     Toast.makeText(context, "[0,255]", Toast.LENGTH_SHORT).show()
                     return
@@ -196,7 +196,7 @@ class ColorCustomLayoutDelegate {
             R.id.et_b_value_hex -> {
                 val tempNumHex = onChangedText.toString().toUpperCase(Locale.getDefault())
                 etSetText(comeFrom, tempNumHex)
-                if(start!=null && after!=null) {
+                if (start != null && after != null) {
                     comeFrom.setSelection(start + after)
                 }
                 numHex =
@@ -212,7 +212,7 @@ class ColorCustomLayoutDelegate {
             R.id.et_hex_input -> {
                 colorHexStr = onChangedText.toString().toUpperCase(Locale.getDefault())
                 etSetText(comeFrom, colorHexStr)
-                if(start!=null && after!=null) {
+                if (start != null && after != null) {
                     comeFrom.setSelection(start + after)
                 }
                 if (colorHexStr.length != 8) {
