@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:digits="0123456789abcdefABCDEF"
             android:hint=" 00000000 "
-            android:gravity="center"
+            android:imeOptions="actionNext"
             android:maxLength="8"
             android:textSize="20sp"
             app:layout_constraintLeft_toRightOf="@id/tv_pound"
@@ -189,6 +191,7 @@
         <EditText
             android:id="@+id/et_b_value_hex"
             style="@style/colorCustom_etValueHex"
+            android:imeOptions="actionDone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/et_b_value_decimal"
             app:layout_constraintTop_toTopOf="@id/tv_b_label"

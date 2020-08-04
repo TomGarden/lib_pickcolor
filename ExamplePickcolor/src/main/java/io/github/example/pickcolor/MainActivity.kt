@@ -2,6 +2,7 @@ package io.github.example.pickcolor
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.github.tomgarden.lib.log.Logger
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private var testFlag: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +25,9 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
 
         btn_init_color_ffffffff.setOnClickListener {
-            EditTextDialogFragment().show(supportFragmentManager, "测试")
+            PickColorDialogFrag.builder()
+                .build()
+                .show(supportFragmentManager, "empty")
         }
 
         btn_init_color_ff000000.setOnClickListener {
@@ -45,13 +49,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun test(): Unit {
-        PickColorDialogFrag.Builder()
-            .setDefNegativeClickListener(getString(R.string.lib_picker_color__str_cancel), null)
-            .setDefNeutralClickListener(getString(R.string.lib_picker_color__str_custom),getString(R.string.lib_picker_color__str_back), null)
-            .setDefPositiveClickListener(getString(R.string.lib_picker_color__str_ok))
-            { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
-                Logger.d(selColor?.toString(this))
-                Logger.d(flag)
+        PickColorDialogFrag.builder()
+            .setTitle("我是 Title")
+            .setDefNegativeClickListener("我是取消", null)
+            .setDefNeutralClickListener(
+                getString(R.string.lib_picker_color__str_custom),
+                getString(R.string.lib_picker_color__str_back),
+                null
+            )
+            .setPositiveClickListener("我是确定")
+            { dialogFrag: PickColorDialogFrag, btnPositive: Button, flag: Any? ->
+                //Logger.d(selColor?.toString(this))
+                testFlag++
+                Logger.d(testFlag)
             }
             /*Def 和 非 Def 的差别就是 非 Def 会覆盖 Def , 并且点击事件不会导致 dialog dismiss*/
             //.setNegativeClickListener(getString(R.string.cancel))

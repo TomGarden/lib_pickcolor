@@ -28,12 +28,13 @@
         <item name="android:inputType">numberDecimal</item>
         <item name="android:digits">0123456789</item>
         <item name="android:gravity">center</item>
-        <item name="android:hint">  D  </item>
+        <item name="android:hint">D</item>
         <item name="android:maxLength">3</item>
         <item name="android:minWidth">27dp</item>
         <item name="android:text">0</item>
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:imeOptions">actionNext</item>
     </style>
 
     <style name="colorCustom_etValueHex">
@@ -47,12 +48,13 @@
         <item name="android:background">@null</item>
         <item name="android:digits">0123456789abcdefABCDEF</item>
         <item name="android:gravity">center</item>
-        <item name="android:hint"> H </item>
+        <item name="android:hint">H</item>
         <item name="android:maxLength">2</item>
         <item name="android:minWidth">25dp</item>
         <item name="android:text">00</item>
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:imeOptions">actionNext</item>
     </style>
 
 </resources>

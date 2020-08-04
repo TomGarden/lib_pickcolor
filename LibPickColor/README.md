@@ -62,7 +62,7 @@ Select color
     }
 ```
 
-## TODO LIST
+## 操作列表和进度存续
 
 ```kotlin
     //设置了这三个接口就可以在颜色选择阶段做出某些响应了
@@ -71,7 +71,6 @@ Select color
     private var customColorChangeListener:(()->Unit)? = null
 ```
 
-
 1. 默认颜色设置应该对两个面板同时做出支持
 2. [√]自定义面板操作代码应该更加简洁
 3. 自定义面板按钮应该允许录入字母或者数字
@@ -79,7 +78,14 @@ Select color
     - 低版本拖动 SeekBar 抖动太严重了
 4. [√]支持选择默认面板
 5. 丢帧问题优化
-
+6. 切换屏幕方向
+    - [持久化必要数据用于页面恢复](https://developer.android.com/topic/libraries/architecture/saving-states)
+    - 需要辨析 Serializable 和 Parcelable
+    - 由于 Builder 后来赋值给 Delegate 这导致我们缓存 Builder 无法记录实时的 Delegate 状态 ,
+      所以我们打算 合并 Delegate 和 Builder 然后缓存这个合并体
+    - 关于函数参数不知道如何写入和读出缓存 , 等等 kotlin 书籍的同时了解下 @Parcelize
+    - 关于函数参数(lambda表达式)的存储 , 当前的 dialog 好像是做了的 , 1-我们看看它是怎么做的 , 2-尝试模仿它
+        - 这需要查看和调试源代码了
 
 
 ## 参考

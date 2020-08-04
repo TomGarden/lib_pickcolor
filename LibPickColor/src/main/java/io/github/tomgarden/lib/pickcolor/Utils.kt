@@ -1,6 +1,11 @@
 package io.github.tomgarden.lib.pickcolor
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import android.widget.GridView
+import android.widget.ScrollView
+import androidx.core.view.children
 import io.github.tomgarden.lib.log.Logger
 import java.util.*
 
@@ -40,5 +45,51 @@ object Utils {
         hexColorStr = String.format(Locale.getDefault(), "%8S", hexColorStr).replace(" ", "F")
 
         return hexColorStr
+    }
+
+    fun printViewTree(input: View) {
+        //获取跟view
+        var view = input.parent
+        while (view.parent is View || view.parent is ViewGroup) {
+            view = view.parent
+
+            if (view is GridView) {
+                if (view.visibility == View.VISIBLE) {
+                    view.visibility = View.GONE
+                } else {
+                    view.visibility = View.VISIBLE
+                }
+            } else if (view is ScrollView && view.id == -1) {
+                if (view.visibility == View.VISIBLE) {
+                    view.visibility = View.GONE
+                } else {
+                    view.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        val stringBuilder = StringBuilder()
+
+        fun check(aView: View, line: Int) {
+            val ary = CharArray(line * 4)
+            Arrays.fill(ary, '-')
+            stringBuilder.append("\n")
+                .append(String(ary))
+                .append(aView.javaClass)
+                .append("   ")
+                .append(aView.id.toString())
+            if (aView is ViewGroup) {
+                aView.children.forEach { view ->
+                    check(view, line + 1)
+                }
+            }
+        }
+
+        if (view is View) {
+            check(view as View, 0)
+            Logger.i(stringBuilder.toString())
+        } else {
+            Logger.i("EMPTY")
+        }
     }
 }
