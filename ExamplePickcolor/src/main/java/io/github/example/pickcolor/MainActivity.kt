@@ -2,6 +2,7 @@ package io.github.example.pickcolor
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.github.tomgarden.lib.log.Logger
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private var testFlag: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +25,9 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
 
         btn_init_color_ffffffff.setOnClickListener {
+            PickColorDialogFrag.builder()
+                .build()
+                .show(supportFragmentManager, "empty")
         }
 
         btn_init_color_ff000000.setOnClickListener {
@@ -52,10 +57,11 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.lib_picker_color__str_back),
                 null
             )
-            .setDefPositiveClickListener("我是确定")
-            { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
+            .setPositiveClickListener("我是确定")
+            { dialogFrag: PickColorDialogFrag, btnPositive: Button, flag: Any? ->
                 Logger.d(selColor?.toString(this))
-                Logger.d(flag)
+                testFlag++
+                Logger.d(testFlag)
             }
             /*Def 和 非 Def 的差别就是 非 Def 会覆盖 Def , 并且点击事件不会导致 dialog dismiss*/
             //.setNegativeClickListener(getString(R.string.cancel))

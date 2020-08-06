@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.GridView
 import androidx.appcompat.app.AlertDialog
+import io.github.tomgarden.lib.log.Logger
 
 /**
  * 我们需要 context 上下文做重要的事情 , 比如加载布局等等
@@ -46,13 +47,16 @@ open class BaseBuilder() : Parcelable {
     var positiveBtnStr: String? = null
 
 
+    /*这些按钮点击后弹窗会消失 , 如果设置了 defXXX 和 XXX , XXX 会替换掉 defXXX 的响应*/
     var defNegativeClickListener:
             ((dialogInterface: DialogInterface?, which: Int, flag: Any?) -> Unit)? = null
     var defNeutralClickListener:
             ((dialogInterface: DialogInterface?, which: Int, flag: Any?) -> Unit)? = null
-    var defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any?) -> Unit)? =
+    var defPositiveClickListener:
+            ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any?) -> Unit)? =
         null
 
+    /*这些按钮点击后弹窗是否会消失由开发者主动控制*/
     var negativeClickListener:
             ((dialogFrag: PickColorDialogFrag, btnNegative: Button, flag: Any?) -> Unit)? = null
     open var neutralClickListener:
@@ -70,23 +74,28 @@ open class BaseBuilder() : Parcelable {
 
 
     constructor(parcel: Parcel) : this() {
-        parcel.readParcelable<PickColorDefPanel>(PickColorDefPanel::class.java.classLoader)
-            ?.let {
-                pickColorCurPanel = it
-            }
-        title = parcel.readString()
-        negativeBtnStr = parcel.readString()
-        neutralBtnSelectStr = parcel.readString()
-        neutralBtnCustomStr = parcel.readString()
-        positiveBtnStr = parcel.readString()
+//        parcel.readParcelable<PickColorDefPanel>(PickColorDefPanel::class.java.classLoader)
+//            ?.let {
+//                pickColorCurPanel = it
+//            }
+//        title = parcel.readString()
+//        negativeBtnStr = parcel.readString()
+//        neutralBtnSelectStr = parcel.readString()
+//        neutralBtnCustomStr = parcel.readString()
+//        positiveBtnStr = parcel.readString()
 
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
 
-        dest?.writeString(title)
-        dest?.writeString(negativeBtnStr)
+//        dest?.writeString(title)
+//        dest?.writeString(negativeBtnStr)
+//
+//        dest?.writeValue(neutralClickListener)
 
+        if (neutralClickListener != null) {
+            Logger.i("neutralClickListener != null")
+        }
     }
 
     override fun describeContents(): Int = 0
@@ -149,7 +158,9 @@ open class BaseBuilder() : Parcelable {
     ): BaseBuilder {
         this.neutralBtnSelectStr = neutralBtnSelectStr
         this.neutralBtnCustomStr = neutralBtnCustomStr
-        this.defNeutralClickListener = defNeutralClickListener
+        defNeutralClickListener?.let {
+            this.defNeutralClickListener = defNeutralClickListener
+        }
         return this
     }
 
@@ -237,25 +248,7 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
                 defNeutralClickListener?.invoke(dialog, which, flag)
             }
             .setPositiveButton(positiveBtnStr) { dialog, which ->
-
-                var selColor: PickColor? = null
-
-                if (gridView.parent != null) {//如果在颜色选择布局
-
-                    selColor = pickColorAdapter.getSelColor()
-
-                } else if (colorCustomLayout.parent != null) {//如果在颜色自定义布局
-
-                    etHexInput.text?.let {
-                        selColor = PickColor(it.toString())
-                    }
-
-                } else {
-
-                    //throw RuntimeException("logic err")
-
-                }
-
+                val selColor: PickColor = getPickColorResult()
                 defPositiveClickListener?.invoke(dialog, which, selColor, flag)
             }
 
@@ -361,6 +354,20 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
     }
 
     private fun getContext(): Context = mContext!!
+
+    fun getPickColorResult(): PickColor {
+        val selColor: PickColor =
+            when (pickColorCurPanel) {
+                PickColorDefPanel.PANEL_SELECT -> {
+                    pickColorAdapter.getSelColor()
+                }
+                PickColorDefPanel.PANEL_CUSTOM -> {
+                    PickColor(cclDelegate.getColorHexStrFromDex())
+                }
+            }
+
+        return selColor
+    }
 
     override fun build(): PickColorDialogFrag = PickColorDialogFrag(this)
 }

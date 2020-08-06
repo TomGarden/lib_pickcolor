@@ -83,6 +83,9 @@ Select color
     - 需要辨析 Serializable 和 Parcelable
     - 由于 Builder 后来赋值给 Delegate 这导致我们缓存 Builder 无法记录实时的 Delegate 状态 ,
       所以我们打算 合并 Delegate 和 Builder 然后缓存这个合并体
+    - 关于函数参数不知道如何写入和读出缓存 , 等等 kotlin 书籍的同时了解下 @Parcelize
+    - 关于函数参数(lambda表达式)的存储 , 当前的 dialog 好像是做了的 , 1-我们看看它是怎么做的 , 2-尝试模仿它
+        - 这需要查看和调试源代码了
 
 
 ## 参考

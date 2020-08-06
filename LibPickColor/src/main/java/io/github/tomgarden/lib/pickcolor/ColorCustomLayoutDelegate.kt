@@ -323,7 +323,7 @@ class ColorCustomLayoutDelegate {
         return alphaHex + redHex + greenHex + blueHex
     }
 
-    private fun getColorHexStrFromDex(): String {
+    fun getColorHexStrFromDex(): String {
         val alphaDec = this.etAValueD.text.toString().toIntOrNull() ?: 0
         val redDec = this.etRValueD.text.toString().toIntOrNull() ?: 0
         val greenDec = this.etGValueD.text.toString().toIntOrNull() ?: 0
@@ -408,11 +408,11 @@ class EtValueTextWatcher(
         count: Int,
         after: Int
     ) {
-        Logger.d(
-            "1-beforeTextChanged=charSequence=${charSequence.toString()}, start=${start}, count=${count}, after=${after}), ${debugViewName(
-                editText
-            )}"
-        )
+//        Logger.d(
+//            "1-beforeTextChanged=charSequence=${charSequence.toString()}, start=${start}, count=${count}, after=${after}), ${debugViewName(
+//                editText
+//            )}"
+//        )
 
         if (getAuthorView() == null) {
             setAuthorView(editText)
@@ -428,15 +428,15 @@ class EtValueTextWatcher(
     }
 
     override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-        Logger.d(
-            "2-onTextChanged(charSequence= ${charSequence.toString()} start= ${start} before= ${before} count= ${count}), ${debugViewName(
-                editText
-            )}"
-        )
+//        Logger.d(
+//            "2-onTextChanged(charSequence= ${charSequence.toString()} start= ${start} before= ${before} count= ${count}), ${debugViewName(
+//                editText
+//            )}"
+//        )
     }
 
     override fun afterTextChanged(editable: Editable?) {
-        Logger.d("3-beforeTextChanged(editable= ${editable.toString()}), $${debugViewName(editText)}")
+//        Logger.d("3-beforeTextChanged(editable= ${editable.toString()}), $${debugViewName(editText)}")
 
         if (getAuthorView() === editText) {
             editable?.let {
