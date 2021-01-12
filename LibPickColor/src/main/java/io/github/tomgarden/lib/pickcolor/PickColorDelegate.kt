@@ -79,16 +79,19 @@ open class BaseBuilder() : Parcelable {
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<BaseBuilder> {
-
+    companion object {
         const val BUILDER_PARCELABLE = "BUILDER_PARCELABLE"
 
-        override fun createFromParcel(parcel: Parcel): BaseBuilder {
-            return BaseBuilder(parcel)
-        }
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<BaseBuilder> {
 
-        override fun newArray(size: Int): Array<BaseBuilder?> {
-            return arrayOfNulls(size)
+            override fun createFromParcel(parcel: Parcel): BaseBuilder {
+                return BaseBuilder(parcel)
+            }
+
+            override fun newArray(size: Int): Array<BaseBuilder?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 

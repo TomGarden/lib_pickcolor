@@ -93,5 +93,15 @@ class PickColorDialogFrag() : DialogFragment(), DialogInterface.OnShowListener {
         super.setCancelable(cancelable)
         return this
     }
+
+    override fun onStop() {
+        super.onStop()
+        Logger.i("super.onStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Logger.i("super.onDestroy()")
+    }
 }
 
