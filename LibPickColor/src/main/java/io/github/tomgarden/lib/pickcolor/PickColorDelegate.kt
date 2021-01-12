@@ -86,17 +86,7 @@ open class BaseBuilder() : Parcelable {
 
     }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-
-//        dest?.writeString(title)
-//        dest?.writeString(negativeBtnStr)
-//
-//        dest?.writeValue(neutralClickListener)
-
-        if (neutralClickListener != null) {
-            Logger.i("neutralClickListener != null")
-        }
-    }
+    override fun writeToParcel(dest: Parcel?, flags: Int) = Unit
 
     override fun describeContents(): Int = 0
 
@@ -215,6 +205,11 @@ open class BaseBuilder() : Parcelable {
     }
 
     open fun build(): PickColorDialogFrag = throw RuntimeException("Not Override")
+
+    /**重建 Dialog*/
+    open fun onCreateDialog() {
+
+    }
 }
 
 
@@ -263,13 +258,7 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
         val result =
             LayoutInflater.from(getContext()).inflate(R.layout.color_selector, null) as GridView
 
-        if (getContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //横屏
-            result.numColumns = 5
-        } else if (getContext().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            //竖屏
-            result.numColumns = 4
-        }
+        resetGridViewColumns(result)
         result.adapter = this.pickColorAdapter
         result.onItemClickListener = this.pickColorAdapter
         result.onItemLongClickListener = this.pickColorAdapter
@@ -291,9 +280,11 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
                 PickColorDefPanel.PANEL_CUSTOM -> fromCustomToSelLayout(btnNeutral)
             }
 
+            aDialog.setTitle(pickColorCurPanel.toString())
         }
 
-    constructor(builder: BaseBuilder) : this(null) {
+    /** 对外公开此构造函数会造成初始化过程中的异常 */
+    private constructor(builder: BaseBuilder) : this(null) {
         this.pickColorCurPanel = builder.pickColorCurPanel
         this.title = builder.title
         this.inputColor = builder.inputColor
@@ -302,6 +293,8 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
         this.neutralBtnSelectStr = builder.neutralBtnSelectStr
         this.neutralBtnCustomStr = builder.neutralBtnCustomStr
         this.positiveBtnStr = builder.positiveBtnStr
+
+        /*下述赋值会造成异常出现 , 对象不对应*/
         this.defNegativeClickListener = builder.defNegativeClickListener
         this.defNeutralClickListener = builder.defNeutralClickListener
         this.defPositiveClickListener = builder.defPositiveClickListener
@@ -370,6 +363,22 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
     }
 
     override fun build(): PickColorDialogFrag = PickColorDialogFrag(this)
+
+    override fun onCreateDialog() {
+        super.onCreateDialog()
+        resetGridViewColumns(gridView)
+    }
+
+    private fun resetGridViewColumns(gridView: GridView) {
+        /*更优秀的实现方式是根据屏幕大小来设置列数*/
+        if (getContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //横屏
+            gridView.numColumns = 5
+        } else if (getContext().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //竖屏
+            gridView.numColumns = 4
+        }
+    }
 }
 
 

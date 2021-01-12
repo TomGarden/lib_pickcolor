@@ -15,7 +15,7 @@ import java.util.*
 
 /**
  * describe : 自定义颜色布局
- * [√]优化点 : EditText 的录入事件怎么做到和原生一样自然 , 无法录入就录入无效 , 删除后光标未知合理
+ * [√]优化点 : EditText 的录入事件怎么做到和原生一样自然 , 无法录入就录入无效 , 删除后光标位置合理
  *
  * author : Create by tom , on 2020/7/24-7:47 AM
  * github : https://github.com/TomGarden

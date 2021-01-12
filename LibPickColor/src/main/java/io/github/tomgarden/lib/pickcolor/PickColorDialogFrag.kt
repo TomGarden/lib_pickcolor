@@ -4,17 +4,17 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import io.github.tomgarden.lib.log.Logger
 
 
 /**
  * describe :使用本类需要注意一点，在本类中使用的颜色十六进制值，只有在交付给 Color 之前才会添加 # 。
  *
- *
- *onAttach
- *onCreate
- *onCreateDialog
- *onCreateView
- *onActivityCreated
+ * onAttach
+ * onCreate
+ * onCreateDialog
+ * onCreateView
+ * onActivityCreated
  *
  * author : tom
  *
@@ -37,10 +37,16 @@ class PickColorDialogFrag() : DialogFragment(), DialogInterface.OnShowListener {
         if (!this::delegate.isInitialized) {
             savedInstanceState?.getParcelable<BaseBuilder?>(BaseBuilder.BUILDER_PARCELABLE)
                 ?.let { builder ->
-                    delegate = PickColorDelegate(builder)
+                    if (builder is PickColorDelegate) {
+                        delegate = builder
+                    } else /*if (builder is BaseBuilder)*/ {
+                        //delegate = PickColorDelegate(builder)
+                        Logger.e("对象不对应需要跟进 : lister 函数对象如果赋值会造成对象不对应的异常 , 更新方式暂不探究")
+                    }
                 }
         }
         delegate.mContext = requireContext()
+        delegate.onCreateDialog()
 
         val dialog = delegate.aDialog
         dialog.setOnShowListener(this)
