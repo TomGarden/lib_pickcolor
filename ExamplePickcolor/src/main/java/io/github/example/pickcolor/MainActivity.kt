@@ -1,19 +1,18 @@
 package io.github.example.pickcolor
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.github.tomgarden.lib.log.Logger
-import io.github.tomgarden.lib.pickcolor.PickColorDialogFrag
 import io.github.tomgarden.lib.pickcolor.PickColor
 import io.github.tomgarden.lib.pickcolor.PickColorDefPanel
+import io.github.tomgarden.lib.pickcolor.PickColorDialogFrag
+import io.github.tomgarden.lib.pickcolor.Utils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-
-    private var testFlag: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,56 +25,80 @@ class MainActivity : AppCompatActivity() {
 
         btn_init_color_ffffffff.setOnClickListener {
             PickColorDialogFrag.builder()
+                .setTitle("init color ffffffff")
+                .setInputColor(PickColor("ffffffff"))
+                .setFlag("I'm a Flag")
+                .setDefPanel(PickColorDefPanel.PANEL_CUSTOM)
+                .setDefNeutralClickListener("to Custom", "to Select")
+                { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
+                    log("dismiss")
+                }
+                .setDefNegativeClickListener("negative")
+                { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
+                    log("dismiss")
+                }
+                .setDefPositiveClickListener("positive")
+                { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
+                    log("dismiss : ${selColor?.toString(this)}")
+                }
                 .build()
-                .show(supportFragmentManager, "empty")
+                .show(supportFragmentManager, "btn_init_color_ffffffff")
         }
 
         btn_init_color_ff000000.setOnClickListener {
+            PickColorDialogFrag.builder()
+                .setTitle("init color 00000000")
+                .setInputColor(PickColor("00000000"))
+                .setFlag("I'm a Flag")
+
+                .setDefPanel(PickColorDefPanel.PANEL_SELECT)
+
+                //do dismiss action
+                .setDefNeutralClickListener("to Custom", "to Select")
+                { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
+                    log("dismiss")
+                }
+                .setDefNegativeClickListener("negative")
+                { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
+                    log("dismiss")
+                }
+                .setDefPositiveClickListener("positive")
+                { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
+                    log("dismiss : ${selColor?.toString(this)}")
+                }
+
+                // don't dismiss action cover dismiss action
+                //.setNeutralClickListener("to Custom", "to Select")
+                //{ dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any? ->
+                //    log("no dismiss , no switch")
+                //}
+                .setNegativeClickListener("negative")
+                { dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any? ->
+                    log("no dismiss")
+                }
+                .setPositiveClickListener("positive")
+                { dialogFrag: PickColorDialogFrag, btnPositive: Button, flag: Any? ->
+                    log(dialogFrag.getPickColorResult().toString(this))
+                    dialogFrag.dismiss()
+                }
+
+                .setOnShowListener { log("show") }
+                .setOnDismissListener { log("dismiss") }
+
+                .build()
+
+                .setCancelableCover(true)
+
+                .show(supportFragmentManager, "btn_init_color_ffffffff")
         }
 
-        btn_click_not_reset_ui.setOnClickListener {
-        }
-
-        tvLogCat.setOnClickListener {
-            Toast.makeText(this, "haha", Toast.LENGTH_SHORT).show()
-            test()
-        }
-
-        btn_recreate.setOnClickListener { test() }
-
-        btnTest4Leak.setOnClickListener {
-
-        }
+        btnPrintViewTree.setOnClickListener { Utils.printViewTree(it) }
     }
 
-    private fun test(): Unit {
-        PickColorDialogFrag.builder()
-            .setTitle("我是 Title")
-            .setDefNegativeClickListener("我是取消", null)
-            .setDefNeutralClickListener(
-                getString(R.string.lib_picker_color__str_custom),
-                getString(R.string.lib_picker_color__str_back),
-                null
-            )
-            .setPositiveClickListener("我是确定")
-            { dialogFrag: PickColorDialogFrag, btnPositive: Button, flag: Any? ->
-                //Logger.d(selColor?.toString(this))
-                testFlag++
-                Logger.d(testFlag)
-            }
-            /*Def 和 非 Def 的差别就是 非 Def 会覆盖 Def , 并且点击事件不会导致 dialog dismiss*/
-            //.setNegativeClickListener(getString(R.string.cancel))
-            //{ dialogFrag: PickColorDialogFrag, btnNegative: Button, flag: Any? -> /*TODO LOGIC*/}
-            //.setNeutralClickListener(getString(R.string.custom))
-            //{ dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any? -> /*TODO LOGIC*/}
-            //.setPositiveClickListener(getString(R.string.ok))
-            //{ dialogFrag: PickColorDialogFrag, btnPositive: Button, flag: Any? -> /*TODO LOGIC*/}
-            .setOnShowListener { /*展示监听 , 实现细节 : 在 onShow 方法中调用本回调*/ }
-            .setOnDismissListener { /*隐藏监听 , 实现细节 : 在 onDismiss 方法中调用本回调*/ }
-            /*reset 只和下面二个属性相关*/
-            .setTitle("Title"/*,true*/)
-            .setDefPanel(PickColorDefPanel.PANEL_CUSTOM)
-            .build()
-            .show(supportFragmentManager, "test()")
+
+    @SuppressLint("SetTextI18n")
+    private fun log(str: String) {
+        Logger.i(str)
+        tvLogCat.text = tvLogCat.text.toString() + "\n" + str
     }
 }

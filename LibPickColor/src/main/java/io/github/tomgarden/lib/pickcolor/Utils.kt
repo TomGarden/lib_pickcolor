@@ -33,13 +33,14 @@ object Utils {
      *
      * TODO : 意外格式和字符仍需要做足够的测试
      * */
-    fun formatHexColorStr(hexColorStr: String): String {
+    fun formatHexColorStr(inputHexColorStr: String): String {
 
-        var hexColorStr = hexColorStr.replace("#", "")
+        var hexColorStr = inputHexColorStr.replace("#", "")
 
         if (hexColorStr.length > 8) {
-            Logger.e("颜色字符串格式异常 , 已经修正")
-            hexColorStr = hexColorStr.substring(hexColorStr.length - 8)
+            val fixHexColorStr = hexColorStr.substring(hexColorStr.length - 8)
+            Logger.e("颜色字符串格式 , 修正 : $hexColorStr > $fixHexColorStr")
+            hexColorStr = fixHexColorStr
         }
 
         hexColorStr = String.format(Locale.getDefault(), "%8S", hexColorStr).replace(" ", "F")
@@ -52,20 +53,6 @@ object Utils {
         var view = input.parent
         while (view.parent is View || view.parent is ViewGroup) {
             view = view.parent
-
-            if (view is GridView) {
-                if (view.visibility == View.VISIBLE) {
-                    view.visibility = View.GONE
-                } else {
-                    view.visibility = View.VISIBLE
-                }
-            } else if (view is ScrollView && view.id == -1) {
-                if (view.visibility == View.VISIBLE) {
-                    view.visibility = View.GONE
-                } else {
-                    view.visibility = View.VISIBLE
-                }
-            }
         }
 
         val stringBuilder = StringBuilder()

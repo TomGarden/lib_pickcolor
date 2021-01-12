@@ -3,6 +3,7 @@ package io.github.tomgarden.lib.pickcolor
 import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
+import java.lang.StringBuilder
 import java.util.*
 
 
@@ -42,7 +43,7 @@ class PickColor {
     constructor(colorHexStr: String) : this(true, -1, colorHexStr)
 
     private fun checkColorId(colorId: Int) {
-        
+
     }
 
     fun getResult(context: Context): String? {
@@ -85,24 +86,30 @@ class PickColor {
     }
 
     fun toString(context: Context): String {
-        return String.format(
-            "SelColorResult : isCustomColor=%b;\ncolorID=%d[%s][#%s];\ncolorHexStr=#%s;",
-            isCustomColor,
 
-            colorID,
-            if (isCustomColor) "null" else context.resources?.getResourceName(colorID)
-                ?: "get ColorId's res Name failed!!!",
-            if (isCustomColor) "null" else String.format(
-                Locale.getDefault(),
-                "%08X",
-                ContextCompat.getColor(context, colorID)
-            ),
+        val stringBuilder = StringBuilder()
 
-            colorHexStr
-        )
+        val colorIdStr =
+            if (isCustomColor) {
+                "null"
+            } else {
+                context.resources?.getResourceName(colorID) ?: "get ColorId's res Name failed!!!"
+            }
+        val colorIdToHexStr =
+            if (isCustomColor) {
+                "null"
+            } else {
+                String.format(Locale.getDefault(), "%08X", ContextCompat.getColor(context, colorID))
+            }
+
+        return stringBuilder.append("SelColorResult : \n")
+            .append("    isCustomColor = ${isCustomColor} \n")
+            .append("    colorID = ${colorID} [$colorIdStr] [#$colorIdToHexStr] \n")
+            .append("    colorHexStr=#$colorHexStr ")
+            .toString()
     }
 
     override fun toString(): String {
-        return "Please call PickColorResult#toString(context: Context) }"
+        return "Please call PickColor#toString(context: Context) }"
     }
 }

@@ -251,7 +251,7 @@ class PickColorAdapter(
             positionIndex[0] = position
             winIsTopPanel = false
 
-            Toast.makeText(context, "切换选区样式", Toast.LENGTH_LONG).show()
+            //Toast.makeText(context, "切换选区样式", Toast.LENGTH_LONG).show()
 
         } else {
             val position = position - 1

@@ -87,6 +87,11 @@ class PickColorDialogFrag() : DialogFragment(), DialogInterface.OnShowListener {
         outState.putParcelable(BaseBuilder.BUILDER_PARCELABLE, delegate)
     }
 
+    fun getPickColorResult() = delegate.getPickColorResult()
 
+    fun setCancelableCover(cancelable: Boolean): PickColorDialogFrag {
+        super.setCancelable(cancelable)
+        return this
+    }
 }
 

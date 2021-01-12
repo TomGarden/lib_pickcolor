@@ -73,18 +73,7 @@ open class BaseBuilder() : Parcelable {
     //***********************************************************************************
 
 
-    constructor(parcel: Parcel) : this() {
-//        parcel.readParcelable<PickColorDefPanel>(PickColorDefPanel::class.java.classLoader)
-//            ?.let {
-//                pickColorCurPanel = it
-//            }
-//        title = parcel.readString()
-//        negativeBtnStr = parcel.readString()
-//        neutralBtnSelectStr = parcel.readString()
-//        neutralBtnCustomStr = parcel.readString()
-//        positiveBtnStr = parcel.readString()
-
-    }
+    constructor(parcel: Parcel) : this()
 
     override fun writeToParcel(dest: Parcel?, flags: Int) = Unit
 
@@ -108,26 +97,31 @@ open class BaseBuilder() : Parcelable {
     //                        执行 Parcel 操作的属性相关的赋值取值函数
     //***********************************************************************************
 
+    /**设置默认面板*/
     fun setDefPanel(defPanel: PickColorDefPanel): BaseBuilder {
         this.pickColorCurPanel = defPanel
         return this
     }
 
+    /**设置标题*/
     fun setTitle(title: String?): BaseBuilder {
         this.title = title
         return this
     }
 
+    /**设置默认颜色*/
     fun setInputColor(inputColor: PickColor): BaseBuilder {
         this.inputColor = inputColor
         return this
     }
 
+    /*设置标识对象 , 在回调事件中会携带这个对象的*/
     fun setFlag(flag: Any?): BaseBuilder {
         this.flag = flag
         return this
     }
 
+    /*默认消极事件 , 点击后弹窗会消失*/
     fun setDefNegativeClickListener(
         negativeBtnStr: String,
         defNegativeClickListener: ((dialogInterface: DialogInterface?, which: Int, flag: Any?) -> Unit)?
@@ -137,7 +131,7 @@ open class BaseBuilder() : Parcelable {
         return this
     }
 
-    /**
+    /** 默认中性事件 , 点击后弹窗会消失
      * @param neutralBtnSelectStr 选择面板 neutral 按钮文案
      * @param neutralBtnCustomStr 自定义面板 neutral 按钮文案
      */
@@ -154,6 +148,7 @@ open class BaseBuilder() : Parcelable {
         return this
     }
 
+    /*默认积极事件 , 点击后弹窗会消失*/
     fun setDefPositiveClickListener(
         positiveBtnStr: String,
         defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any?) -> Unit)?
@@ -163,7 +158,7 @@ open class BaseBuilder() : Parcelable {
         return this
     }
 
-
+    /*自定义消极事件 , 点击弹窗不消失*/
     fun setNegativeClickListener(
         negativeBtnStr: String,
         negativeClickListener: ((dialogFrag: PickColorDialogFrag, btnNegative: Button, flag: Any?) -> Unit)?
@@ -173,6 +168,10 @@ open class BaseBuilder() : Parcelable {
         return this
     }
 
+    /**自定义中性事件 , 点击弹窗不消失
+     * @param neutralBtnSelectStr 选择面板 neutral 按钮文案
+     * @param neutralBtnCustomStr 自定义面板 neutral 按钮文案
+     * */
     fun setNeutralClickListener(
         neutralBtnSelectStr: String,
         neutralBtnCustomStr: String,
@@ -184,6 +183,7 @@ open class BaseBuilder() : Parcelable {
         return this
     }
 
+    /*自定义积极事件 , 点击弹窗不消失*/
     fun setPositiveClickListener(
         positiveBtnStr: String,
         positiveClickListener: ((dialogFrag: PickColorDialogFrag, btnPositive: Button, flag: Any?) -> Unit)?
@@ -193,17 +193,19 @@ open class BaseBuilder() : Parcelable {
         return this
     }
 
-
+    /*弹窗展示监听*/
     fun setOnShowListener(onShowListener: (() -> Unit)?): BaseBuilder {
         this.onShowListener = onShowListener
         return this
     }
 
+    /*弹窗消失监听*/
     fun setOnDismissListener(onDismissListener: (() -> Unit)?): BaseBuilder {
         this.onDismissListener = onDismissListener
         return this
     }
 
+    /*构建 DialogFragment 对象*/
     open fun build(): PickColorDialogFrag = throw RuntimeException("Not Override")
 
     /**重建 Dialog*/
@@ -214,7 +216,7 @@ open class BaseBuilder() : Parcelable {
 
 
 /**
- * 将 Dialog 内逻辑委托出来 , 方便继承不同的 DialogFragment 实现 PickColor
+ * 将 DialogFragment 内逻辑委托出来
  */
 class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
 
@@ -224,7 +226,10 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
 
         when (pickColorCurPanel) {
             PickColorDefPanel.PANEL_SELECT -> builder.setView(this.gridView)//默认首次展示一级颜色选区
-            PickColorDefPanel.PANEL_CUSTOM -> builder.setView(this.colorCustomLayout)
+            PickColorDefPanel.PANEL_CUSTOM -> {
+                etHexInput.setText(inputColor.getHexColorWithoutPrefix(getContext()))
+                builder.setView(this.colorCustomLayout)
+            }
         }
 
         title?.let { builder.setTitle(title) }
@@ -236,11 +241,11 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
             }
 
         builder
-            .setNegativeButton(negativeBtnStr) { dialog, which ->
-                defNegativeClickListener?.invoke(dialog, which, flag)
-            }
             .setNeutralButton(neutralBtnStr) { dialog, which ->
                 defNeutralClickListener?.invoke(dialog, which, flag)
+            }
+            .setNegativeButton(negativeBtnStr) { dialog, which ->
+                defNegativeClickListener?.invoke(dialog, which, flag)
             }
             .setPositiveButton(positiveBtnStr) { dialog, which ->
                 val selColor: PickColor = getPickColorResult()
