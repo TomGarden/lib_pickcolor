@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             )
             .setPositiveClickListener("我是确定")
             { dialogFrag: PickColorDialogFrag, btnPositive: Button, flag: Any? ->
-                Logger.d(selColor?.toString(this))
+                //Logger.d(selColor?.toString(this))
                 testFlag++
                 Logger.d(testFlag)
             }
