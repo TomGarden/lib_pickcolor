@@ -4,6 +4,36 @@ Select color
 
 ## Usage
 
+[填充字段 `implementation '<groupId>:<artifactId>:<version>'`](https://github.com/TomGarden?tab=packages&repo_name=lib_pickcolor)
+
+[GitHub_Packages_了解](https://github.com/TomGarden/tom-notes/issues/8)
+
+```
+//此节点位于 ModuleName/build.gradle
+dependencies {
+    //implementation '<groupId>:<artifactId>:<version>'
+    implementation 'io.github.tomgarden:lib_pick_color:0.1.3'
+}
+
+//此节点位于 ModuleName/build.gradle , 或者 ProjectName/build.gradle
+repositories {
+    maven {
+        //url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+        url = uri("https://maven.pkg.github.com/TomGarden/lib_pickcolor")
+
+        credentials {
+            //不限的 github 账户名
+            username = System.getenv("TOMGARADEN_USERNAME")
+            //与 github 账户名成对的 具有 read:packages 权限的 token
+            password = System.getenv("TOMGARADEN_READ_PACKAGES_TOKEN")
+        }
+    }
+}
+```
+
+
+
+
 ### 说明
 1. Lib 内部的 strHexValue 是剔除了 '#' 符号的字符串
 
