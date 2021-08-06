@@ -3,7 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
       <module name="lib_pickcolor.ExamplePickcolor" target="1.8" />
-      <module name="lib_pickcolor.LibPickColor" target="1.8" />
+      <module name="lib_pickcolor.lib_pick_color" target="1.8" />
       <module name="TestModule" target="1.7" />
     </bytecodeTargetLevel>
   </component>

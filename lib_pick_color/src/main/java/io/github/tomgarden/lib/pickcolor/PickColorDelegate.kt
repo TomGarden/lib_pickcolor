@@ -3,7 +3,6 @@ package io.github.tomgarden.lib.pickcolor
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
-import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.GridView
 import androidx.appcompat.app.AlertDialog
-import io.github.tomgarden.lib.log.Logger
 
 /**
  * 我们需要 context 上下文做重要的事情 , 比如加载布局等等
@@ -35,7 +33,7 @@ open class BaseBuilder() : Parcelable {
     var title: String? = null
 
     /*默认颜色*/
-    var inputColor: PickColor = PickColor(Utils.DEF_COLOR)
+    var inputColor: PickColor = PickColor(LibPickerColorUtils.DEF_COLOR)
 
     /*携带的其他数据*/
     var flag: Any? = null

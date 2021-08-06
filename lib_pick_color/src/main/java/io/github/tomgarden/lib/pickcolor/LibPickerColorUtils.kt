@@ -16,7 +16,7 @@ import java.util.*
  * <p>time : 20-2-16 16:50
  * <p>GitHub : https://github.com/TomGarden
  */
-object Utils {
+object LibPickerColorUtils {
 
     val DEF_COLOR = "00000000"
 

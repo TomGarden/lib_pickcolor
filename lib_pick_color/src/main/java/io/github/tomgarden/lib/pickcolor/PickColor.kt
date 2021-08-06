@@ -16,38 +16,43 @@ import java.util.*
  * <p>time : 20-2-16 18:43
  * <p>GitHub : https://github.com/TomGarden
  */
-class PickColor {
-    val isCustomColor: Boolean
-    val colorID: Int         //如果是选中资源文件中预留的颜色，此值有意义
-
-    /**如果是自定义颜色此值有意义  此值, 是剔除了 '#' 符号的*/
-    val colorHexStr: String?
-
+class PickColor private constructor(
     /**
      * 需要将输入参数做出合理的规范 , 并且将修正结果和原因输出到控制台
      *
      * TODO: [colorID] 应该是可以被本库识别的 ID , 否则转换为自定义 [colorHexStr]
      * TODO: [colorHexStr] 应该被修正为不含有 '#' 字符的 8 位(指定)字符
      */
-    private constructor(isCustomColor: Boolean, colorID: Int, colorHexStr: String?) {
-        this.isCustomColor = isCustomColor
-        this.colorID = colorID
-        this.colorHexStr = colorHexStr?.let { Utils.formatHexColorStr(colorHexStr) }
+    private val colorID: Int,            /*如果是选中资源文件中预留的颜色，此值有意义*/
+    private var colorHexStr: String     /*如果是自定义颜色此值有意义  此值, 是剔除了 '#' 符号的*/
+) {
+
+    init {
+        if (colorHexStr.isNotEmpty()) {
+            this.colorHexStr = LibPickerColorUtils.formatHexColorStr(colorHexStr)
+        } else {
+            this.colorHexStr = ""
+        }
     }
 
-    constructor(pickColor: PickColor)
-            : this(pickColor.isCustomColor, pickColor.colorID, pickColor.colorHexStr)
 
-    constructor(colorID: Int) : this(false, colorID, null)
+    constructor(pickColor: PickColor) : this(pickColor.colorID, pickColor.colorHexStr)
 
-    constructor(colorHexStr: String) : this(true, -1, colorHexStr)
+    constructor(colorID: Int) : this(colorID, "")
 
-    private fun checkColorId(colorId: Int) {
+    constructor(colorHexStr: String) : this(-1, colorHexStr)
 
+    /**  @return true : 路径 ; false 资源*/
+    fun isCustom(): Boolean {
+        return when {
+            (colorID == -1 && colorHexStr.isNotEmpty()) -> true
+            (colorID != -1 && colorHexStr.isEmpty()) -> false
+            else -> throw Throwable("未知异常")
+        }
     }
 
-    fun getResult(context: Context): String? {
-        if (isCustomColor) {
+    fun getResult(context: Context): String {
+        if (isCustom()) {
             return colorHexStr
         } else {
 
@@ -62,8 +67,8 @@ class PickColor {
      * @param context Context
      * @return String?
      */
-    fun getHexColorWithoutPrefix(context: Context): String? {
-        if (isCustomColor) {
+    fun getHexColorWithoutPrefix(context: Context): String {
+        if (isCustom()) {
             return colorHexStr
         } else {
             return String.format(
@@ -78,7 +83,7 @@ class PickColor {
      * @return Unit
      */
     fun getDexColor(context: Context): Int {
-        if (isCustomColor) {
+        if (isCustom()) {
             return Color.parseColor("#${colorHexStr}")
         } else {
             return ContextCompat.getColor(context, colorID)
@@ -90,20 +95,20 @@ class PickColor {
         val stringBuilder = StringBuilder()
 
         val colorIdStr =
-            if (isCustomColor) {
+            if (isCustom()) {
                 "null"
             } else {
                 context.resources?.getResourceName(colorID) ?: "get ColorId's res Name failed!!!"
             }
         val colorIdToHexStr =
-            if (isCustomColor) {
+            if (isCustom()) {
                 "null"
             } else {
                 String.format(Locale.getDefault(), "%08X", ContextCompat.getColor(context, colorID))
             }
 
         return stringBuilder.append("SelColorResult : \n")
-            .append("    isCustomColor = ${isCustomColor} \n")
+            .append("    isCustomColor = ${isCustom()} \n")
             .append("    colorID = ${colorID} [$colorIdStr] [#$colorIdToHexStr] \n")
             .append("    colorHexStr=#$colorHexStr ")
             .toString()

@@ -1,4 +1,4 @@
 include ':TestModule'
 include ':ExamplePickcolor'
-include ':LibPickColor'
+include ':lib_pick_color'
 rootProject.name = "lib_pickcolor"

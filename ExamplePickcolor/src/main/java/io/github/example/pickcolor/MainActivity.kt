@@ -9,7 +9,7 @@ import io.github.tomgarden.lib.log.Logger
 import io.github.tomgarden.lib.pickcolor.PickColor
 import io.github.tomgarden.lib.pickcolor.PickColorDefPanel
 import io.github.tomgarden.lib.pickcolor.PickColorDialogFrag
-import io.github.tomgarden.lib.pickcolor.Utils
+import io.github.tomgarden.lib.pickcolor.LibPickerColorUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "btn_init_color_ffffffff")
         }
 
-        btnPrintViewTree.setOnClickListener { Utils.printViewTree(it) }
+        btnPrintViewTree.setOnClickListener { LibPickerColorUtils.printViewTree(it) }
     }
 
 
