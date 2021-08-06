@@ -1,10 +1,12 @@
 package io.github.tomgarden.lib.pickcolor
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
 import android.widget.ScrollView
+import androidx.annotation.ColorInt
 import androidx.core.view.children
 import io.github.tomgarden.lib.log.Logger
 import java.util.*
@@ -46,6 +48,22 @@ object LibPickerColorUtils {
         hexColorStr = String.format(Locale.getDefault(), "%8S", hexColorStr).replace(" ", "F")
 
         return hexColorStr
+    }
+
+    fun colorDexToHex(@ColorInt colorInt: Int): String = String.format(Locale.getDefault(), "%08X", colorInt)
+
+    /*意在替换     fun formatHexColorStr  函数*/
+    private fun _formatHexColorStr(inputHexColorStr: String): String {
+        val colorStr =
+            if (inputHexColorStr.startsWith('#')) {
+                inputHexColorStr
+            } else {
+                "#$inputHexColorStr"
+            }
+
+        val intColor = Color.parseColor(colorStr)
+
+        return String.format(Locale.getDefault(), "%08X", intColor)
     }
 
     fun printViewTree(input: View) {

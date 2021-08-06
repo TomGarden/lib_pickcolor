@@ -2,6 +2,7 @@ package io.github.tomgarden.lib.pickcolor
 
 import android.content.Context
 import android.graphics.Color
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import java.lang.StringBuilder
 import java.util.*
@@ -35,6 +36,10 @@ class PickColor private constructor(
         }
     }
 
+    /*TODO 暂时注释掉 , 注释掉的内容是更好的梳理颜色转换的方式 , 有时间可以梳理下*/
+    /*companion object {
+        fun parseColorFromInt(@ColorInt colorDex: Int): PickColor = PickColor(String.format("%08X", colorDex))
+    }*/
 
     constructor(pickColor: PickColor) : this(pickColor.colorID, pickColor.colorHexStr)
 
