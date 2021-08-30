@@ -2,6 +2,8 @@ package io.github.tomgarden.lib.pickcolor
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import java.lang.StringBuilder
@@ -25,7 +27,7 @@ class PickColor private constructor(
      * TODO: [colorHexStr] 应该被修正为不含有 '#' 字符的 8 位(指定)字符
      */
     private val colorID: Int,            /*如果是选中资源文件中预留的颜色，此值有意义*/
-    private var colorHexStr: String     /*如果是自定义颜色此值有意义  此值, 是剔除了 '#' 符号的*/
+    private var colorHexStr: String,     /*如果是自定义颜色此值有意义  此值, 是剔除了 '#' 符号的*/
 ) {
 
     init {
@@ -95,6 +97,8 @@ class PickColor private constructor(
         }
     }
 
+    fun getDrawable(context: Context): ColorDrawable = ColorDrawable(getDexColor(context))
+
     fun toString(context: Context): String {
 
         val stringBuilder = StringBuilder()
@@ -121,5 +125,14 @@ class PickColor private constructor(
 
     override fun toString(): String {
         return "Please call PickColor#toString(context: Context) }"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return when {
+            other !is PickColor -> false
+            other.colorID == this.colorID &&
+                    other.colorHexStr == this.colorHexStr -> true
+            else -> false
+        }
     }
 }

@@ -51,7 +51,7 @@ open class BaseBuilder() : Parcelable {
     var defNeutralClickListener:
             ((dialogInterface: DialogInterface?, which: Int, flag: Any?) -> Unit)? = null
     var defPositiveClickListener:
-            ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any?) -> Unit)? =
+            ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor, flag: Any?) -> Unit)? =
         null
 
     /*这些按钮点击后弹窗是否会消失由开发者主动控制*/
@@ -152,7 +152,7 @@ open class BaseBuilder() : Parcelable {
     /*默认积极事件 , 点击后弹窗会消失*/
     fun setDefPositiveClickListener(
         positiveBtnStr: String,
-        defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any?) -> Unit)?
+        defPositiveClickListener: ((dialogInterface: DialogInterface?, which: Int, selColor: PickColor, flag: Any?) -> Unit)?
     ): BaseBuilder {
         this.positiveBtnStr = positiveBtnStr
         this.defPositiveClickListener = defPositiveClickListener
@@ -285,8 +285,8 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
                 PickColorDefPanel.PANEL_SELECT -> fromSelToCustomLayout(btnNeutral)
                 PickColorDefPanel.PANEL_CUSTOM -> fromCustomToSelLayout(btnNeutral)
             }
-
-            aDialog.setTitle(pickColorCurPanel.toString())
+            /*切换标题文案*/
+            //aDialog.setTitle(pickColorCurPanel.toString())
         }
 
     /** 对外公开此构造函数会造成初始化过程中的异常 */
