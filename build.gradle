@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.lib_pick_color_project_name = 'lib_pickcolor'
-    ext.kotlin_version = "1.5.10"
+    ext.kotlin_version = "1.5.30"
     repositories {
         google()
         jcenter()
