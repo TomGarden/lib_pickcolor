@@ -7,8 +7,8 @@ Github Actions 工作流暂未完成
 * */
 
 ext {
-    moduleVersionCode = 4
-    moduleVersionName = '0.1.4'
+    moduleVersionCode = 6
+    moduleVersionName = '0.1.6'
     moduleName = 'lib_pick_color'
 
     mavenGroupId = 'io.github.tomgarden'
