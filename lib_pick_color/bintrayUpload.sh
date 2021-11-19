@@ -4,6 +4,6 @@
 #../gradlew clean build
 #../gradlew :LibPickColor:bintrayUpload
 
-../gradlew :LibPickColor:clean
-../gradlew :LibPickColor:build
-../gradlew :LibPickColor:publish
+../gradlew :lib_pick_color:clean
+../gradlew :lib_pick_color:build
+../gradlew :lib_pick_color:publish

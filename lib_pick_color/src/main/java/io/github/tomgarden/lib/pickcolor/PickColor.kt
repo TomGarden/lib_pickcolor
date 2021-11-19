@@ -3,10 +3,8 @@ package io.github.tomgarden.lib.pickcolor
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import java.lang.StringBuilder
+import io.github.tomgarden.lib.log.Logger
 import java.util.*
 
 
@@ -98,6 +96,25 @@ class PickColor private constructor(
     }
 
     fun getDrawable(context: Context): ColorDrawable = ColorDrawable(getDexColor(context))
+
+    /** 根据 colorId 获取 styleId */
+    fun getStyleIdByColorId(context: Context, themeStyle: ThemeStyleEnum): Int? {
+        try {
+            if (isCustom()) return null
+            val colorResPrefix = "lib_pick_color__md_"
+            val entityName = context.resources.getResourceEntryName(colorID)
+            if (!entityName.contains(colorResPrefix)) return null
+            val colorSubName = entityName.substring(colorResPrefix.length)
+            val styleResType = "style"
+            val styleResName = "lib_pick_color__${themeStyle.styleKey}_${colorSubName}"
+            val styleId = context.resources.getIdentifier(styleResName, styleResType, context.packageName)
+            if (styleId == 0) return null/*没有找到对应主题资源*/
+            return styleId
+        } catch (throwable: Throwable) {
+            Logger.e(throwable)
+            return null
+        }
+    }
 
     fun toString(context: Context): String {
 
