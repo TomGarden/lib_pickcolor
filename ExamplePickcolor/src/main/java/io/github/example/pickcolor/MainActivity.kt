@@ -22,6 +22,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        btn_init_color_ffffffff_unneutral.setOnClickListener {
+            PickColorDialogFrag.builder()
+                .setTitle("init color ffffffff")
+                .setInputColor(PickColor("ffffffff"))
+                .setFlag("I'm a Flag")
+                .setDefPanel(PickColorDefPanel.PANEL_CUSTOM)
+                //.setNeutralClickListener("to Custom", "to Select")
+                .setDefNegativeClickListener("negative")
+                { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
+                    log("dismiss")
+                }
+                .setDefPositiveClickListener("positive")
+                { dialogInterface: DialogInterface?, which: Int, selColor: PickColor?, flag: Any? ->
+                    log("dismiss : ${selColor?.toString(this)}")
+                }
+                .build()
+                .show(supportFragmentManager, "btn_init_color_ffffffff_unneutral")
+        }
+
 
         btn_init_color_ffffffff.setOnClickListener {
             PickColorDialogFrag.builder()
@@ -29,10 +48,7 @@ class MainActivity : AppCompatActivity() {
                 .setInputColor(PickColor("ffffffff"))
                 .setFlag("I'm a Flag")
                 .setDefPanel(PickColorDefPanel.PANEL_CUSTOM)
-                .setDefNeutralClickListener("to Custom", "to Select")
-                { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
-                    log("dismiss")
-                }
+                .setNeutralClickListener("to Custom", "to Select")
                 .setDefNegativeClickListener("negative")
                 { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
                     log("dismiss")
@@ -54,10 +70,7 @@ class MainActivity : AppCompatActivity() {
                 .setDefPanel(PickColorDefPanel.PANEL_SELECT)
 
                 //do dismiss action
-                .setDefNeutralClickListener("to Custom", "to Select")
-                { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
-                    log("dismiss")
-                }
+                .setNeutralClickListener("to Custom", "to Select")
                 .setDefNegativeClickListener("negative")
                 { dialogInterface: DialogInterface?, which: Int, flag: Any? ->
                     log("dismiss")

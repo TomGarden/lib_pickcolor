@@ -143,9 +143,7 @@ open class BaseBuilder() : Parcelable {
     ): BaseBuilder {
         this.neutralBtnSelectStr = neutralBtnSelectStr
         this.neutralBtnCustomStr = neutralBtnCustomStr
-        defNeutralClickListener?.let {
-            this.defNeutralClickListener = defNeutralClickListener
-        }
+        this.defNeutralClickListener = defNeutralClickListener
         return this
     }
 
@@ -176,7 +174,7 @@ open class BaseBuilder() : Parcelable {
     fun setNeutralClickListener(
         neutralBtnSelectStr: String,
         neutralBtnCustomStr: String,
-        neutralClickListener: ((dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any?) -> Unit)?
+        neutralClickListener: ((dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any?) -> Unit)? = getChangePanelNeutralClickListener(),
     ): BaseBuilder {
         this.neutralBtnSelectStr = neutralBtnSelectStr
         this.neutralBtnCustomStr = neutralBtnCustomStr
@@ -205,6 +203,9 @@ open class BaseBuilder() : Parcelable {
         this.onDismissListener = onDismissListener
         return this
     }
+
+    /** 获取预置切换面板的中性事件响应体 , 此点击事件不会导致弹窗 dismiss */
+    open fun getChangePanelNeutralClickListener(): ((dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any?) -> Unit)? = null
 
     /*构建 DialogFragment 对象*/
     open fun build(): PickColorDialogFrag = throw RuntimeException("Not Override")
@@ -278,17 +279,6 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
     val colorCustomLayout by lazy { cclDelegate.colorCustomLayout }
     val etHexInput by lazy { cclDelegate.etHexInput }
 
-    override var neutralClickListener: ((dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any?) -> Unit)? =
-        { dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any? ->
-
-            when (pickColorCurPanel) {
-                PickColorDefPanel.PANEL_SELECT -> fromSelToCustomLayout(btnNeutral)
-                PickColorDefPanel.PANEL_CUSTOM -> fromCustomToSelLayout(btnNeutral)
-            }
-            /*切换标题文案*/
-            //aDialog.setTitle(pickColorCurPanel.toString())
-        }
-
     /** 对外公开此构造函数会造成初始化过程中的异常 */
     private constructor(builder: BaseBuilder) : this(null) {
         this.pickColorCurPanel = builder.pickColorCurPanel
@@ -305,7 +295,7 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
         this.defNeutralClickListener = builder.defNeutralClickListener
         this.defPositiveClickListener = builder.defPositiveClickListener
         this.negativeClickListener = builder.negativeClickListener
-        this.neutralClickListener = builder.neutralClickListener ?: this.neutralClickListener
+        this.neutralClickListener = builder.neutralClickListener
         this.positiveClickListener = builder.positiveClickListener
         this.onShowListener = builder.onShowListener
         this.onDismissListener = builder.onDismissListener
@@ -367,6 +357,18 @@ class PickColorDelegate(var mContext: Context? = null) : BaseBuilder() {
 
         return selColor
     }
+
+    /** 获取预置切换面板的中性事件响应体 , 此点击事件不会导致弹窗 dismiss */
+    override fun getChangePanelNeutralClickListener(): ((dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any?) -> Unit) =
+        { dialogFrag: PickColorDialogFrag, btnNeutral: Button, flag: Any? ->
+
+            when (pickColorCurPanel) {
+                PickColorDefPanel.PANEL_SELECT -> fromSelToCustomLayout(btnNeutral)
+                PickColorDefPanel.PANEL_CUSTOM -> fromCustomToSelLayout(btnNeutral)
+            }
+            /*切换标题文案*/
+            //aDialog.setTitle(pickColorCurPanel.toString())
+        }
 
     override fun build(): PickColorDialogFrag = PickColorDialogFrag(this)
 

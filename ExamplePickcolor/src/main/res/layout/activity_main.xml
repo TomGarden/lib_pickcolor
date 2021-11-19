@@ -8,6 +8,13 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/btn_init_color_ffffffff_unneutral"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_init_color_ffffffff_unneutral"
+        android:textAllCaps="false" />
+
+    <Button
         android:id="@+id/btn_init_color_ffffffff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
