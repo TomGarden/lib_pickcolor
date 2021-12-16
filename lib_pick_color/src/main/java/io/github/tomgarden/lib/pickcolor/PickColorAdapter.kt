@@ -188,7 +188,7 @@ class PickColorAdapter(
             if (isTopSelected()) {
                 /*一级选区 , 已经做出选择*/
                 val colorId = this.colorPalette.COLORS_TOP_SORT[positionIndex[0]]
-                selColor = PickColor(colorId)
+                selColor = PickColor(context, colorId)
             } else {
                 /*一级选区 , 尚未作出选择*/
                 selColor = PickColor(inputColor)
@@ -200,11 +200,11 @@ class PickColorAdapter(
             if (isSubSelected()) {
                 /*二级选区 , 已经走做出选择*/
                 val colorId = this.colorPalette.COLORS_SUB_SORT[positionIndex[0]][positionIndex[1]]
-                selColor = PickColor(colorId)
+                selColor = PickColor(context, colorId)
             } else {
                 /*二级选区 , 尚未作出选择*/
                 val colorId = this.colorPalette.COLORS_TOP_SORT[positionIndex[0]]
-                selColor = PickColor(colorId)
+                selColor = PickColor(context, colorId)
             }
 
         }
