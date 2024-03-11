@@ -1,15 +1,29 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
+//    id 'kotlin-android-extensions'
+    id 'kotlin-parcelize'
     id 'maven-publish'
 }
 
-apply from: 'publish_github_packages.gradle'
+//apply from: 'publish_github_packages.gradle'
+
+def GROUP_ID = 'com.github.TomGarden'
+def VERSION = '0.1.32'
+
+group = "$GROUP_ID"
+version = "$VERSION"
+
+
 
 android {
+    namespace 'io.github.tomgarden.lib.pickcolor'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+
+//    buildFeatures {
+//        viewBinding true
+//    }
 
     defaultConfig {
         minSdkVersion 14
@@ -24,6 +38,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
 }
@@ -42,5 +61,20 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation 'io.github.tomgarden:lib_log:+'
+    implementation 'io.github.tomgarden:lib_log:0.1.23'
+}
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = "$GROUP_ID"
+                artifactId = 'lib.pickcolor'
+                version = "$VERSION"
+            }
+        }
+    }
 }

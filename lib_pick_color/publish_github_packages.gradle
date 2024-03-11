@@ -68,9 +68,9 @@ android {
 
 task testTask {
     //测试 gradle 语法
-    println(System.getenv("TOMGARADEN_USERNAME"))
-    println(System.getenv("TOMGARADEN_WRITE_PACKAGES_TOKEN"))
-    println("$buildDir/outputs/aar/$moduleName-release.aar")
+    println("---->" + System.getenv("TOMGARADEN_USERNAME"))
+    println("---->" + System.getenv("TOMGARADEN_WRITE_PACKAGES_TOKEN"))
+    println("---->" + "$buildDir/outputs/aar/$moduleName-release.aar")
 }
 
 //在 project 执行命令, 即可完成上传
