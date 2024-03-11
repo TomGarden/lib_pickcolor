@@ -72,7 +72,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = "$GROUP_ID"
-                artifactId = 'lib.pickcolor'
+                artifactId = 'lib_pickcolor'
                 version = "$VERSION"
             }
         }

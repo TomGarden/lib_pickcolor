@@ -1,13 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.lib_pick_color_project_name = 'lib_pickcolor'
-    //ext.lib_pick_color_project_name = ''
+//    ext.lib_pick_color_project_name = 'lib_pickcolor'
+    ext.lib_pick_color_project_name = ''
     ext {
-        compileSdkVersion = 31
+        sdkVersion = 31
+        compileSdkVersion = sdkVersion
         buildToolsVersion = "30.0.3"
-        targetSdkVersion = 31
+        targetSdkVersion = sdkVersion
 
-        kotlin_version = "1.5.31"
+        kotlin_version = '1.9.20'
         multidex = '1.0.3'
         core_ktx_version = '1.7.0'
         appcompat_version = '1.4.0'
@@ -16,10 +17,11 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:8.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -31,14 +33,16 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
         maven {
             url = uri("https://maven.pkg.github.com/TomGarden/lib_log")
             url = uri("https://maven.pkg.github.com/TomGarden/lib_pickcolor")
             credentials {
                 //不限的 github 账户名
-                username = System.getenv("TOMGARADEN_USERNAME")
+                it.username = System.getenv("TOMGARADEN_USERNAME")
                 //与 github 账户名成对的 具有 read:packages 权限的 token
-                password = System.getenv("TOMGARADEN_READ_PACKAGES_TOKEN")
+                it.password = System.getenv("TOMGARADEN_READ_PACKAGES_TOKEN")
             }
         }
     }

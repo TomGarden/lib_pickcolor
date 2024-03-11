@@ -1,54 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btn_init_color_ffffffff_unneutral"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_init_color_ffffffff_unneutral"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/btn_init_color_ffffffff"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/init_color_ffffffff"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/btn_init_color_ff000000"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/init_color_ff000000"
-        android:textAllCaps="false" />
-
-
-    <Button
-        android:id="@+id/btnTest4Leak"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="test 4 memory leak"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/btnPrintViewTree"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="print view tree"
-        android:textAllCaps="false" />
-
-
-    <TextView
-        android:id="@+id/tvLogCat"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:foreground="?android:selectableItemBackground"
-        android:text="logcat" />
+        android:orientation="vertical"
+        tools:context=".MainActivity">
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_init_color_ffffffff_unneutral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_init_color_ffffffff_unneutral"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn_init_color_ffffffff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/init_color_ffffffff"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn_init_color_ff000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/init_color_ff000000"
+            android:textAllCaps="false" />
+
+
+        <Button
+            android:id="@+id/btnTest4Leak"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="test 4 memory leak"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btnPrintViewTree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="print view tree"
+            android:textAllCaps="false" />
+
+
+        <TextView
+            android:id="@+id/tvLogCat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?android:selectableItemBackground"
+            android:text="logcat" />
+
+        <include
+            android:id="@+id/include_one"
+            layout="@layout/include_test" />
+
+        <include layout="@layout/include_test" />
+
+        <include layout="@layout/include_test" />
+
+    </LinearLayout>
+</ScrollView>

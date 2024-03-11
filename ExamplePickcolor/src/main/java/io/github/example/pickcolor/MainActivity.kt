@@ -10,19 +10,26 @@ import io.github.tomgarden.lib.pickcolor.PickColor
 import io.github.tomgarden.lib.pickcolor.PickColorDefPanel
 import io.github.tomgarden.lib.pickcolor.PickColorDialogFrag
 import io.github.tomgarden.lib.pickcolor.LibPickerColorUtils
-import kotlinx.android.synthetic.main.activity_main.*
+import io.github.tomgaren.example.pickcolor.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+        binding.includeOne.tvTest.text = "123123123"
+
 
         initView()
     }
 
     private fun initView() {
-        btn_init_color_ffffffff_unneutral.setOnClickListener {
+        binding.btnInitColorFfffffffUnneutral.setOnClickListener {
             PickColorDialogFrag.builder()
                 .setTitle("init color ffffffff")
                 .setInputColor(PickColor("ffffffff"))
@@ -42,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        btn_init_color_ffffffff.setOnClickListener {
+        binding.btnInitColorFfffffff.setOnClickListener {
             PickColorDialogFrag.builder()
                 .setTitle("init color ffffffff")
                 .setInputColor(PickColor("ffffffff"))
@@ -61,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "btn_init_color_ffffffff")
         }
 
-        btn_init_color_ff000000.setOnClickListener {
+        binding.btnInitColorFf000000.setOnClickListener {
             PickColorDialogFrag.builder()
                 .setTitle("init color 00000000")
                 .setInputColor(PickColor("00000000"))
@@ -105,13 +112,13 @@ class MainActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "btn_init_color_ffffffff")
         }
 
-        btnPrintViewTree.setOnClickListener { LibPickerColorUtils.printViewTree(it) }
+        binding.btnPrintViewTree.setOnClickListener { LibPickerColorUtils.printViewTree(it) }
     }
 
 
     @SuppressLint("SetTextI18n")
     private fun log(str: String) {
         Logger.i(str)
-        tvLogCat.text = tvLogCat.text.toString() + "\n" + str
+        binding.tvLogCat.text = binding.tvLogCat.text.toString() + "\n" + str
     }
 }
