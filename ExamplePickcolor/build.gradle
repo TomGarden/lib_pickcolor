@@ -52,7 +52,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation 'io.github.tomgarden:lib_log:+'
+    implementation 'com.github.TomGarden:lib_log:v0.1.32'
     //implementation project(path: ':lib_pick_color')
     //implementation project(path: ":$lib_pick_color_project_name:lib_pick_color")
     implementation 'com.github.TomGarden:lib_pickcolor:0.1.33'

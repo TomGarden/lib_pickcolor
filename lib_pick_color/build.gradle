@@ -9,7 +9,7 @@ plugins {
 //apply from: 'publish_github_packages.gradle'
 
 def GROUP_ID = 'com.github.TomGarden'
-def VERSION = '0.1.33'
+def VERSION = '0.1.34'
 
 group = "$GROUP_ID"
 version = "$VERSION"
@@ -61,7 +61,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation 'io.github.tomgarden:lib_log:0.1.23'
+    implementation 'com.github.TomGarden:lib_log:v0.1.32'
 }
 
 

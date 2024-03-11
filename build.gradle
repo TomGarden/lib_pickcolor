@@ -3,7 +3,7 @@ buildscript {
 //    ext.lib_pick_color_project_name = 'lib_pickcolor'
     ext.lib_pick_color_project_name = ''
     ext {
-        sdkVersion = 31
+        sdkVersion = 34
         compileSdkVersion = sdkVersion
         buildToolsVersion = "30.0.3"
         targetSdkVersion = sdkVersion
