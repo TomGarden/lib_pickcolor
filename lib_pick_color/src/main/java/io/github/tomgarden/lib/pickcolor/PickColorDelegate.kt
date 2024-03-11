@@ -73,7 +73,7 @@ open class BaseBuilder() : Parcelable {
 
     constructor(parcel: Parcel) : this()
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) = Unit
+    override fun writeToParcel(dest: Parcel, flags: Int) = Unit
 
     override fun describeContents(): Int = 0
 
